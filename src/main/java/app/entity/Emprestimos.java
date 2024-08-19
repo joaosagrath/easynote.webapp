@@ -33,9 +33,9 @@ public class Emprestimos {
 	private String situacao;
 	
 	@OneToMany(mappedBy = "emprestimos", cascade = CascadeType.ALL)
-	private List<Alunos> alunos;
+	private Alunos aluno;
 	
 	@OneToMany(mappedBy = "emprestimos", cascade = CascadeType.ALL)
-	private List<Equipamentos> equipamentos;
+	private Equipamentos equipamento;
 	
 }

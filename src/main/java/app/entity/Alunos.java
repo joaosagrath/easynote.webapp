@@ -1,6 +1,7 @@
 package app.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -66,7 +67,7 @@ public class Alunos {
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("alunos")
-	private Emprestimos emprestimos;
+	private List<Emprestimos> emprestimos;
 	
 	
 }

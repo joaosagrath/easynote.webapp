@@ -1,6 +1,7 @@
 package app.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -50,7 +51,7 @@ public class Equipamentos {
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("equipamentos")
-	private Emprestimos emprestimos;
+	private List<Emprestimos> emprestimos;
 	
 	
 }
