@@ -1,10 +1,12 @@
 package app.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,11 +14,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.entity.Equipamentos;
 import app.service.EquipamentosService;
+import jakarta.validation.Valid;
 
+
+@Validated
 @RestController
 @RequestMapping("/api/equipamentos")
 public class EquipamentosController {
@@ -26,7 +32,7 @@ public class EquipamentosController {
 	
 
 	@PostMapping("/save")
-	public ResponseEntity<String> save(@RequestBody Equipamentos equipamento){
+	public ResponseEntity<String> save(@Valid@RequestBody Equipamentos equipamento){
 		try {
 			String mensagem = this.equipamentosService.save(equipamento);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
@@ -36,7 +42,7 @@ public class EquipamentosController {
 	}
 	
 	@PutMapping("/update/{id}")
-	public ResponseEntity<String> update(@RequestBody Equipamentos equipamento, @PathVariable long id){
+	public ResponseEntity<String> update(@Valid @RequestBody Equipamentos equipamento, @PathVariable long id){
 		try {
 			String mensagem = this.equipamentosService.update(equipamento, id);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
@@ -59,6 +65,56 @@ public class EquipamentosController {
 	public ResponseEntity<List<Equipamentos>> findAll(){
 		try {
 			List<Equipamentos> lista = this.equipamentosService.findAll();
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+		}
+	}
+	
+	@GetMapping("/findByPatrimonio")
+	public ResponseEntity<Equipamentos> findByPatrimonio(@RequestParam String patrimonio){
+		try {
+			Equipamentos equipamento = this.equipamentosService.findByPatrimonio(patrimonio);
+			return new ResponseEntity<>(equipamento, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+		}
+	}
+	
+	@GetMapping("/findBySituacao")
+	public ResponseEntity<List<Equipamentos>> findBySituacao(@RequestParam String situacao){
+		try {
+			List<Equipamentos> lista = this.equipamentosService.findBySituacao(situacao);
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+		}
+	}
+	
+	@GetMapping("/findByMarca")
+	public ResponseEntity<List<Equipamentos>> findByMarca(@RequestParam String marca){
+		try {
+			List<Equipamentos> lista = this.equipamentosService.findByMarca(marca);
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+		}
+	}
+	
+	@GetMapping("/findByModelo")
+	public ResponseEntity<List<Equipamentos>> findByModelo(@RequestParam String modelo){
+		try {
+			List<Equipamentos> lista = this.equipamentosService.findByModelo(modelo);
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+		}
+	}
+	
+	@GetMapping("/findByDataAquisicao")
+	public ResponseEntity<List<Equipamentos>> findByDataAquisicao(@RequestParam Date data1, @RequestParam Date data2){
+		try {
+			List<Equipamentos> lista = this.equipamentosService.findByDataAquisicao(data1, data2);
 			return new ResponseEntity<>(lista, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );

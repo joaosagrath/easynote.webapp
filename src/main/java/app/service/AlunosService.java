@@ -18,13 +18,13 @@ public class AlunosService {
 
 	public String save (Alunos alunos) {
 		this.alunosRepository.save(alunos);
-		return "Alunos cadastrado com sucesso";
+		return "Aluno cadastrado com sucesso!";
 	}
 	
 	public String update (Alunos alunos, long id) {
 		alunos.setId(id);
 		this.alunosRepository.save(alunos);
-		return "Atualizado com sucesso";
+		return "Aluno atualizado com sucesso!";
 	}
 	
 	public Alunos findById (long id) {
@@ -45,7 +45,19 @@ public class AlunosService {
 	
 	public String delete (long id) {
 		this.alunosRepository.deleteById(id);
-		return "Veículo deletado com sucesso!";
+		return "Aluno deletado com sucesso!";
+	}
+	
+	public Alunos findByRa(String ra) {
+		return this.alunosRepository.findByRa(ra);
+	}
+	
+	public Alunos findByCpf(String cpf) {
+		return this.alunosRepository.findByCpf(cpf);
+	}
+	
+	public List<Alunos> findByNome(String nome){
+		return this.findByNome(nome);
 	}
 	
 }

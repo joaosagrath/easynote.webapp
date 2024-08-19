@@ -1,10 +1,12 @@
 package app.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,11 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.entity.Emprestimos;
 import app.service.EmprestimosService;
+import jakarta.validation.Valid;
 
+@Validated
 @RestController
 @RequestMapping("/api/emprestimos")
 public class EmprestimosController {
@@ -26,7 +31,7 @@ public class EmprestimosController {
 	
 
 	@PostMapping("/save")
-	public ResponseEntity<String> save(@RequestBody Emprestimos emprestimo){
+	public ResponseEntity<String> save(@Valid @RequestBody Emprestimos emprestimo){
 		try {
 			String mensagem = this.emprestimosService.save(emprestimo);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
@@ -36,7 +41,7 @@ public class EmprestimosController {
 	}
 	
 	@PutMapping("/update/{id}")
-	public ResponseEntity<String> update(@RequestBody Emprestimos emprestimo, @PathVariable long id){
+	public ResponseEntity<String> update(@Valid @RequestBody Emprestimos emprestimo, @PathVariable long id){
 		try {
 			String mensagem = this.emprestimosService.update(emprestimo, id);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
@@ -62,6 +67,56 @@ public class EmprestimosController {
 			return new ResponseEntity<>(lista, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+		}
+	}
+	
+	@GetMapping("/findBySituacao")
+	public ResponseEntity<List<Emprestimos>> findBySituacao(@RequestParam String situacao){
+		try {
+			List<Emprestimos> lista = this.emprestimosService.findBySituacao(situacao);
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/findByAlunoRa")
+	public ResponseEntity<List<Emprestimos>> findByAluno(@RequestParam String ra){
+		try {
+			List<Emprestimos> lista = this.emprestimosService.findByAluno(ra);
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/findByEquipamentoPatrimonio")
+	public ResponseEntity<List<Emprestimos>> findByEquipamento(@RequestParam String patrimonio){
+		try {
+			List<Emprestimos> lista = this.emprestimosService.findByEquipamento(patrimonio);
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/findByDataRetirada")
+	public ResponseEntity<List<Emprestimos>> findByDataRetirada(@RequestParam Date data1, @RequestParam Date data2){
+		try {
+			List<Emprestimos> lista = this.emprestimosService.findByDataRetirada(data1, data2);
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/findByDataDevolucao")
+	public ResponseEntity<List<Emprestimos>> findByDataDevolucao(@RequestParam Date data1, @RequestParam Date data2){
+		try {
+			List<Emprestimos> lista = this.emprestimosService.findByDataDevolucao(data1, data2);
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 	}
 	

@@ -2,105 +2,71 @@ package app.entity;
 
 import java.util.Date;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Alunos {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	
+	@NotBlank(message="Por favor, informe o nome do aluno")
 	private String nome;
+	
+	@NotNull(message="Por favor, informe a data de nascimento do aluno")
 	private Date dataNascimento;
+	
+	@Column(unique=true)
+	@NotBlank(message="Por favor, informe o CPF do aluno")
+	@CPF(message="CPF inválido")
 	private String cpf;
+	
+	@NotBlank(message="Por favor, informe o email do aluno")
+	@Email(message="E-mail inválido")
 	private String email;
+	
+	@NotBlank(message="Por favor, informe o telefone do aluno")
+	@Pattern(regexp = "\\(\\d{2}\\) ?\\d{5}-\\d{4}", message = "O telefone deve corresponder ao formato (xx) xxxxx-xxxx")
 	private String celular;
+	
+	
 	private String usuario;
 	private String senha;
+	
+	@NotBlank(message="Por favor, informe o RA do aluno")
 	private String ra;
+	
+	@NotBlank(message="Por favor, informe o curso do aluno")
 	private String curso;
+	
 	private String ativo;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("alunos")
 	private Emprestimos emprestimos;
-	
-	
-	// getters & setters
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
-	public String getNome() {
-		return nome;
-	}
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-	public Date getDataNascimento() {
-		return dataNascimento;
-	}
-	public void setDataNascimento(Date dataNascimento) {
-		this.dataNascimento = dataNascimento;
-	}
-	public String getCpf() {
-		return cpf;
-	}
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getCelular() {
-		return celular;
-	}
-	public void setCelular(String celular) {
-		this.celular = celular;
-	}
-	public String getUsuario() {
-		return usuario;
-	}
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
-	}
-	public String getSenha() {
-		return senha;
-	}
-	public void setSenha(String senha) {
-		this.senha = senha;
-	}
-	public String getRa() {
-		return ra;
-	}
-	public void setRa(String ra) {
-		this.ra = ra;
-	}
-	public String getCurso() {
-		return curso;
-	}
-	public void setCurso(String curso) {
-		this.curso = curso;
-	}
-	public String getAtivo() {
-		return ativo;
-	}
-	public void setAtivo(String ativo) {
-		this.ativo = ativo;
-	}
-	
 	
 	
 }

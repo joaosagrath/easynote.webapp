@@ -1,5 +1,6 @@
 package app.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +47,26 @@ public class EmprestimosService {
 	public String delete (long id) {
 		this.emprestimosRepository.deleteById(id);
 		return "Veículo deletado com sucesso!";
+	}
+	
+	public List<Emprestimos> findBySituacao(String situacao){
+		return this.emprestimosRepository.findBySituacao(situacao);
+	}
+	
+	public List<Emprestimos> findByAluno(String ra){
+		return this.emprestimosRepository.findByAlunos_Ra(ra);
+	}
+	
+	public List<Emprestimos> findByEquipamento(String equipamento){
+		return this.emprestimosRepository.findByEquipamentos_Patrimonio(equipamento);
+	}
+	
+	public List<Emprestimos> findByDataRetirada(Date data1, Date data2){
+		return this.emprestimosRepository.findByDataRetirada(data1, data2);
+	}
+	
+	public List<Emprestimos> findByDataDevolucao(Date data1, Date data2){
+		return this.emprestimosRepository.findByDataDevolucao(data1, data2);
 	}
 	
 }

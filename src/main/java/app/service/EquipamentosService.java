@@ -1,5 +1,6 @@
 package app.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +47,26 @@ public class EquipamentosService {
 	public String delete (long id) {
 		this.equipamentosRepository.deleteById(id);
 		return "Veículo deletado com sucesso!";
+	}
+	
+	public Equipamentos findByPatrimonio(String patrimonio) {
+		return this.equipamentosRepository.findByPatrimonio(patrimonio);
+	}
+	
+	public List<Equipamentos> findByMarca(String marca){
+		return this.equipamentosRepository.findByMarca(marca);
+	}
+	
+	public List<Equipamentos> findByModelo(String modelo){
+		return this.equipamentosRepository.findByModeloContains(modelo);
+	}
+	
+	public List<Equipamentos> findByDataAquisicao(Date data1, Date data2){
+		return this.equipamentosRepository.findByDataAquisicao(data1, data2);
+	}
+	
+	public List<Equipamentos> findBySituacao(String situacao){
+		return this.findBySituacao(situacao);
 	}
 	
 }
