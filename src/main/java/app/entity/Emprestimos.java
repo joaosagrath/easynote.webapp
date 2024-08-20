@@ -4,12 +4,14 @@ import java.util.Date;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,10 +34,16 @@ public class Emprestimos {
 	
 	private String situacao;
 	
-	@OneToMany(mappedBy = "emprestimos", cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.MERGE)
+	@JsonIgnoreProperties("aluno")
 	private Alunos aluno;
 	
-	@OneToMany(mappedBy = "emprestimos", cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.MERGE)
+	@JsonIgnoreProperties("equipamento")
 	private Equipamentos equipamento;
+	
+	@ManyToOne(cascade = CascadeType.MERGE)
+	@JsonIgnoreProperties("usuario")
+	private Usuarios usuario;
 	
 }

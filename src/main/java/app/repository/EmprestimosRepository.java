@@ -15,9 +15,9 @@ public interface EmprestimosRepository extends JpaRepository<Emprestimos, Long>{
 	
 	public List<Emprestimos> findBySituacao(String situacao);
 	
-	public List<Emprestimos> findByAlunos_Ra(String ra);
+	public List<Emprestimos> findByAlunoRa(String ra);
 	
-	public List<Emprestimos> findByEquipamentos_Patrimonio(String patrimonio);
+	public List<Emprestimos> findByEquipamentoPatrimonio(String patrimonio);
 	
 
 	@Query("FROM Emprestimos e WHERE e.dataRetirada BETWEEN :data1 AND :data2")

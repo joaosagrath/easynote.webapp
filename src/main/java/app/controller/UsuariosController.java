@@ -16,23 +16,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import app.entity.Alunos;
-import app.service.AlunosService;
+import app.entity.Usuarios;
+import app.service.UsuariosService;
 import jakarta.validation.Valid;
 
 @Validated
 @RestController
-@RequestMapping("/api/alunos")
-public class AlunosController {
+@RequestMapping("/api/usuarios")
+public class UsuariosController {
 
 	@Autowired
-	private AlunosService alunosService;
+	private UsuariosService usuarioService;
 	
 
 	@PostMapping("/save")
-	public ResponseEntity<String> save(@Valid@RequestBody Alunos aluno){
+	public ResponseEntity<String> save(@Valid@RequestBody Usuarios usuario){
 		try {
-			String mensagem = this.alunosService.save(aluno);
+			String mensagem = this.usuarioService.save(usuario);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>("Deu erro!"+e.getMessage(), HttpStatus.BAD_REQUEST );
@@ -40,9 +40,9 @@ public class AlunosController {
 	}
 	
 	@PutMapping("/update/{id}")
-	public ResponseEntity<String> update(@Valid@RequestBody Alunos aluno, @PathVariable long id){
+	public ResponseEntity<String> update(@Valid@RequestBody Usuarios usuario, @PathVariable long id){
 		try {
-			String mensagem = this.alunosService.update(aluno, id);
+			String mensagem = this.usuarioService.update(usuario, id);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>("Deu erro!"+e.getMessage(), HttpStatus.BAD_REQUEST );
@@ -50,9 +50,9 @@ public class AlunosController {
 	}
 
 	@GetMapping("/findById/{id}")
-	public ResponseEntity<Alunos> findById(@PathVariable long id){
+	public ResponseEntity<Usuarios> findById(@PathVariable long id){
 		try {
-			Alunos aluno = this.alunosService.findById(id);
+			Usuarios aluno = this.usuarioService.findById(id);
 			return new ResponseEntity<>(aluno, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
@@ -60,29 +60,20 @@ public class AlunosController {
 	}
 	
 	@GetMapping("/findAll")
-	public ResponseEntity<List<Alunos>> findAll(){
+	public ResponseEntity<List<Usuarios>> findAll(){
 		try {
-			List<Alunos> lista = this.alunosService.findAll();
+			List<Usuarios> lista = this.usuarioService.findAll();
 			return new ResponseEntity<>(lista, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
 		}
 	}
 	
-	@GetMapping("/findByRa")
-	public ResponseEntity<Alunos> findByRa(@RequestParam String ra){
-		try {
-			Alunos aluno = this.alunosService.findByRa(ra);
-			return new ResponseEntity<>(aluno, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
-		}
-	}
 	
 	@GetMapping("/findByNome")
-	public ResponseEntity<List<Alunos>> findByNome(@RequestParam String nome){
+	public ResponseEntity<List<Usuarios>> findByNome(@RequestParam String nome){
 		try {
-			List<Alunos> aluno = this.alunosService.findByNome(nome);
+			List<Usuarios> aluno = this.usuarioService.findByNome(nome);
 			return new ResponseEntity<>(aluno, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
@@ -90,9 +81,9 @@ public class AlunosController {
 	}
 	
 	@GetMapping("/findByCpf")
-	public ResponseEntity<Alunos> findByCpf(@RequestParam String cpf){
+	public ResponseEntity<Usuarios> findByCpf(@RequestParam String cpf){
 		try {
-			Alunos aluno = this.alunosService.findByCpf(cpf);
+			Usuarios aluno = this.usuarioService.findByCpf(cpf);
 			return new ResponseEntity<>(aluno, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
@@ -102,7 +93,7 @@ public class AlunosController {
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> delete(@PathVariable long id){
 		try {
-			String mensagem = this.alunosService.delete(id);
+			String mensagem = this.usuarioService.delete(id);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );

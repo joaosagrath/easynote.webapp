@@ -18,6 +18,24 @@ public class EmprestimosService {
 	
 
 	public String save (Emprestimos emprestimos) {
+		
+		
+		List<Emprestimos> alunoEmp = this.emprestimosRepository.findByAlunoRa(emprestimos.getAluno().getRa());
+		
+		for (Emprestimos emp : alunoEmp) {
+		    if (emp.getSituacao().equals("Em andamento")) {
+		       return null;
+		    }
+		}
+		
+		List<Emprestimos> equipEmp = this.emprestimosRepository.findByEquipamentoPatrimonio(emprestimos.getEquipamento().getPatrimonio());
+		
+		for(Emprestimos emp : equipEmp) {
+			if(emp.getSituacao().equals("Em andamento")) {
+				return null;
+			}
+		}
+		
 		this.emprestimosRepository.save(emprestimos);
 		return "Emprestimos cadastrado com sucesso";
 	}
@@ -54,11 +72,11 @@ public class EmprestimosService {
 	}
 	
 	public List<Emprestimos> findByAluno(String ra){
-		return this.emprestimosRepository.findByAlunos_Ra(ra);
+		return this.emprestimosRepository.findByAlunoRa(ra);
 	}
 	
 	public List<Emprestimos> findByEquipamento(String equipamento){
-		return this.emprestimosRepository.findByEquipamentos_Patrimonio(equipamento);
+		return this.emprestimosRepository.findByEquipamentoPatrimonio(equipamento);
 	}
 	
 	public List<Emprestimos> findByDataRetirada(Date data1, Date data2){

@@ -29,45 +29,30 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Alunos {
+public class Usuarios {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@NotBlank(message="Por favor, informe o nome do aluno")
+	@NotBlank(message="Por favor, informe o nome do usuario")
 	private String nome;
-	
-	@NotNull(message="Por favor, informe a data de nascimento do aluno")
-	private Date dataNascimento;
 	
 	@Column(unique=true)
 	@NotBlank(message="Por favor, informe o CPF do aluno")
 	@CPF(message="CPF inválido")
 	private String cpf;
 	
-	@NotBlank(message="Por favor, informe o email do aluno")
-	@Email(message="E-mail inválido")
-	private String email;
-	
-	@NotBlank(message="Por favor, informe o telefone do aluno")
-	@Pattern(regexp = "\\(\\d{2}\\) ?\\d{5}-\\d{4}", message = "O telefone deve corresponder ao formato (xx) xxxxx-xxxx")
-	private String celular;
-	
-	
-	private String usuario;
+	@NotBlank(message="Por favor, informe o LOGIN do aluno")
+	private String login;
+	@NotBlank(message="Por favor, informe o SENHA do aluno")
 	private String senha;
 	
-	@NotBlank(message="Por favor, informe o RA do aluno")
-	private String ra;
-	
-	@NotBlank(message="Por favor, informe o curso do aluno")
-	private String curso;
 	
 	private String ativo;
 	
-	@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL)
-	@JsonIgnoreProperties("aluno")
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+	@JsonIgnoreProperties("usuario")
 	private List<Emprestimos> emprestimos;
 	
 	

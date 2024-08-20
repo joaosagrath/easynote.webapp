@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ public class Equipamentos {
 	
 	@Column(unique=true)
 	@NotNull(message = "Por favor, informe o número do patrimônio do equipamento")
-	private long patrimonio;
+	private String patrimonio;
 	
 	@NotBlank(message= "Por favor, informe a marca do equipamento")
 	private String marca;
@@ -49,9 +50,9 @@ public class Equipamentos {
 	
 	private int ativo;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JsonIgnoreProperties("equipamentos")
-	private List<Emprestimos> emprestimos;
+	@OneToMany(mappedBy = "equipamento", cascade = CascadeType.ALL)
+	@JsonIgnoreProperties("equipamento")
+	private List<Emprestimos> emprestimo;
 	
 	
 }
