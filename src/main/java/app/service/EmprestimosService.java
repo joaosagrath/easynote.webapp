@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import app.entity.Alunos;
 import app.entity.Emprestimos;
 import app.repository.EmprestimosRepository;
 
@@ -19,21 +20,12 @@ public class EmprestimosService {
 
 	public String save (Emprestimos emprestimos) {
 		
+		Alunos aluno = new Alunos();
+		aluno.setId(emprestimos.getAluno().getId());
+		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByAlunoAtivo(aluno);
 		
-		List<Emprestimos> alunoEmp = this.emprestimosRepository.findByAlunoRa(emprestimos.getAluno().getRa());
-		
-		for (Emprestimos emp : alunoEmp) {
-		    if (emp.getSituacao().equals("Em andamento")) {
-		       return null;
-		    }
-		}
-		
-		List<Emprestimos> equipEmp = this.emprestimosRepository.findByEquipamentoPatrimonio(emprestimos.getEquipamento().getPatrimonio());
-		
-		for(Emprestimos emp : equipEmp) {
-			if(emp.getSituacao().equals("Em andamento")) {
-				return null;
-			}
+		if(lista != null && !lista.isEmpty()) {
+			throw new RuntimeException("Aluno já possui empréstimo em andamento!");
 		}
 		
 		this.emprestimosRepository.save(emprestimos);
