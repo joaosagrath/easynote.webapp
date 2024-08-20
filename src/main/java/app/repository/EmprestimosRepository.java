@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import app.entity.Alunos;
 import app.entity.Emprestimos;
+import app.entity.Equipamentos;
 
 public interface EmprestimosRepository extends JpaRepository<Emprestimos, Long>{
 	
@@ -29,5 +30,8 @@ public interface EmprestimosRepository extends JpaRepository<Emprestimos, Long>{
 	
 	@Query("FROM Emprestimos e WHERE e.aluno = :aluno AND e.situacao = 'Em Andamento'")
 	public List<Emprestimos> findByEmprestimosByAlunoAtivo(Alunos aluno);
+	
+	@Query("FROM Emprestimos e WHERE e.equipamento = :equipamento AND e.situacao = 'Em Andamento'")
+	public List<Emprestimos> findByEmprestimosByEquipamentoAtivo(Equipamentos equipamento);
 
 }

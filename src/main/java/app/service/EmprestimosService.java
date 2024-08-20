@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import app.entity.Alunos;
 import app.entity.Emprestimos;
+import app.entity.Equipamentos;
 import app.repository.EmprestimosRepository;
 
 @Service
@@ -20,16 +21,34 @@ public class EmprestimosService {
 
 	public String save (Emprestimos emprestimos) {
 		
-		Alunos aluno = new Alunos();
-		aluno.setId(emprestimos.getAluno().getId());
-		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByAlunoAtivo(aluno);
+		List<Emprestimos> lista = this.encontrarEmprestimoEmAndamentoPorAluno(emprestimos);
 		
 		if(lista != null && !lista.isEmpty()) {
 			throw new RuntimeException("Aluno já possui empréstimo em andamento!");
 		}
 		
+		List<Emprestimos> listaEquip = this.encontrarEmprestimoEmAndamentoPorEquip(emprestimos);
+		
+		if(listaEquip != null && !listaEquip.isEmpty()) {
+			throw new RuntimeException("Equipamento já possui empréstimo em andamento!");
+		}
+		
 		this.emprestimosRepository.save(emprestimos);
 		return "Emprestimos cadastrado com sucesso";
+	}
+	
+	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorAluno(Emprestimos emp){
+		Alunos aluno = new Alunos();
+		aluno.setId(emp.getAluno().getId());
+		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByAlunoAtivo(aluno);
+		return lista;
+	}
+	
+	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorEquip(Emprestimos emp){
+		Equipamentos equipamento = new Equipamentos();
+		equipamento.setId(emp.getEquipamento().getId());
+		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByEquipamentoAtivo(equipamento);
+		return lista;
 	}
 	
 	public String update (Emprestimos emprestimos, long id) {
