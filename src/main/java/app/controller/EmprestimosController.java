@@ -36,7 +36,7 @@ public class EmprestimosController {
 			String mensagem = this.emprestimosService.save(emprestimo);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>("Deu erro!"+e.getMessage(), HttpStatus.BAD_REQUEST );
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST );
 		}
 	}
 	
@@ -46,7 +46,7 @@ public class EmprestimosController {
 			String mensagem = this.emprestimosService.update(emprestimo, id);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>("Deu erro!"+e.getMessage(), HttpStatus.BAD_REQUEST );
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST );
 		}
 	}
 

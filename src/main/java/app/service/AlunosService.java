@@ -13,76 +13,81 @@ import app.repository.EmprestimosRepository;
 
 @Service
 public class AlunosService {
-	
+
 	@Autowired
 	private AlunosRepository alunosRepository;
-	
+
 	@Autowired
 	private EmprestimosRepository emprestimosRepository;
-	
 
-	public String save (Alunos alunos) {
+	public String save(Alunos alunos) {
 		alunos.setAtivo(true);
 		this.alunosRepository.save(alunos);
 		return "Aluno cadastrado com sucesso!";
 	}
-	
-	public String update (Alunos alunos, long id) {
+
+	public String update(Alunos alunos, long id) {
 		alunos.setId(id);
 		this.alunosRepository.save(alunos);
 		return "Aluno atualizado com sucesso!";
 	}
-	
-	public Alunos findById (long id) {
-		
+
+	public Alunos findById(long id) {
+
 		Optional<Alunos> optional = this.alunosRepository.findById(id);
-		if(optional.isPresent()) {
+		if (optional.isPresent()) {
 			return optional.get();
-		}else
+		} else
 			return null;
-		
+
 	}
-	
-	public List<Alunos> findAll () {
-		
+
+	public List<Alunos> findAll() {
+
 		return this.alunosRepository.findAll();
-		
+
 	}
-	
-	public String delete (long id) {
-		
+
+	public String delete(long id) {
+
 		Alunos aluno = new Alunos();
 		aluno.setId(id);
+		System.out.println(id);
 		Emprestimos emp = new Emprestimos();
 		emp.setAluno(aluno);
 		List<Emprestimos> lista = this.encontrarEmprestimoEmAndamentoPorAluno(emp);
 
+		// Verifica se há empréstimos em andamento
 		if (lista != null && !lista.isEmpty()) {
-			throw new RuntimeException("Aluno possui empréstimo em andamento!");
+
+			throw new RuntimeException("Aluno possui empréstimo em andamento.");
+
+		} else {
+			this.alunosRepository.desativarAlunos(id);
+			System.out.println("Aluno foi desativado e salvo com sucesso.");
+			return "Aluno deletado com sucesso!";
+
 		}
-		
-		aluno.setAtivo(false);
-		this.alunosRepository.save(aluno);
-		return "Aluno deletado com sucesso!";
+
 	}
-	
-	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorAluno(Emprestimos emp){
+
+	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorAluno(Emprestimos emp) {
 		Alunos aluno = new Alunos();
 		aluno.setId(emp.getAluno().getId());
 		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByAlunoAtivo(aluno);
 		return lista;
 	}
-	
+
 	public Alunos findByRa(String ra) {
 		return this.alunosRepository.findByRa(ra);
 	}
-	
+
 	public Alunos findByCpf(String cpf) {
 		return this.alunosRepository.findByCpf(cpf);
 	}
-	
-	public List<Alunos> findByNome(String nome){
+
+	public List<Alunos> findByNome(String nome) {
 		return this.findByNome(nome);
 	}
-	
+
 }

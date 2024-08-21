@@ -56,23 +56,25 @@ public class EquipamentosService {
 		Emprestimos emp = new Emprestimos();
 		emp.setEquipamento(equipamento);
 
-		List<Emprestimos> lista = this.encontrarEmprestimoEmAndamentoPorAluno(emp);
+		List<Emprestimos> lista = this.encontrarEmprestimoEmAndamentoPorEquip(emp);
 
 		if (lista != null && !lista.isEmpty()) {
-			throw new RuntimeException("Aluno possui empréstimo em andamento!");
+			throw new RuntimeException("Equipamento possui empréstimo em andamento!");
+		}else {
+			this.equipamentosRepository.desativarEquipamentos(id);
+			return "Equipamento deletado com sucesso!";
 		}
 		
-		equipamento.setAtivo(false);
-		this.equipamentosRepository.save(equipamento);
-		return "Equipamento deletado com sucesso!";
+		
 	}
 
-	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorAluno(Emprestimos emp) {
-		Alunos aluno = new Alunos();
-		aluno.setId(emp.getAluno().getId());
-		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByAlunoAtivo(aluno);
+	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorEquip(Emprestimos emp){
+		Equipamentos equipamento = new Equipamentos();
+		equipamento.setId(emp.getEquipamento().getId());
+		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByEquipamentoAtivo(equipamento);
 		return lista;
 	}
+	
 
 	public Equipamentos findByPatrimonio(String patrimonio) {
 		return this.equipamentosRepository.findByPatrimonio(patrimonio);
