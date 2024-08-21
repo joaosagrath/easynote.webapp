@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import app.entity.Alunos;
+import app.entity.Emprestimos;
 import app.repository.AlunosRepository;
+import app.repository.EmprestimosRepository;
 
 @Service
 public class AlunosService {
@@ -15,8 +17,12 @@ public class AlunosService {
 	@Autowired
 	private AlunosRepository alunosRepository;
 	
+	@Autowired
+	private EmprestimosRepository emprestimosRepository;
+	
 
 	public String save (Alunos alunos) {
+		alunos.setAtivo(true);
 		this.alunosRepository.save(alunos);
 		return "Aluno cadastrado com sucesso!";
 	}
@@ -44,8 +50,27 @@ public class AlunosService {
 	}
 	
 	public String delete (long id) {
-		this.alunosRepository.deleteById(id);
+		
+		Alunos aluno = new Alunos();
+		aluno.setId(id);
+		Emprestimos emp = new Emprestimos();
+		emp.setAluno(aluno);
+		List<Emprestimos> lista = this.encontrarEmprestimoEmAndamentoPorAluno(emp);
+
+		if (lista != null && !lista.isEmpty()) {
+			throw new RuntimeException("Aluno possui empréstimo em andamento!");
+		}
+		
+		aluno.setAtivo(false);
+		this.alunosRepository.save(aluno);
 		return "Aluno deletado com sucesso!";
+	}
+	
+	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorAluno(Emprestimos emp){
+		Alunos aluno = new Alunos();
+		aluno.setId(emp.getAluno().getId());
+		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByAlunoAtivo(aluno);
+		return lista;
 	}
 	
 	public Alunos findByRa(String ra) {

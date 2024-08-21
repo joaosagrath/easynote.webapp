@@ -64,7 +64,7 @@ public class Alunos {
 	@NotBlank(message="Por favor, informe o curso do aluno")
 	private String curso;
 	
-	private String ativo;
+	private boolean ativo;
 	
 	@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("aluno")

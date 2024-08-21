@@ -48,7 +48,7 @@ public class Equipamentos {
 	
 	private String situacao;
 	
-	private int ativo;
+	private boolean ativo;
 	
 	@OneToMany(mappedBy = "equipamento", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("equipamento")

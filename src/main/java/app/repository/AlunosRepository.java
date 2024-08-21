@@ -13,4 +13,5 @@ public interface AlunosRepository extends JpaRepository<Alunos, Long>{
 	public List<Alunos> findByNomeContains(String nome);
 	
 	public Alunos findByCpf(String cpf);
+	
 }
