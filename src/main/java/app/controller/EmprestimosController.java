@@ -1,5 +1,6 @@
 package app.controller;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -102,9 +103,10 @@ public class EmprestimosController {
 	}
 	
 	@GetMapping("/findByDataRetirada")
-	public ResponseEntity<List<Emprestimos>> findByDataRetirada(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date data1,
-	        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date data2){
-		try {
+	public ResponseEntity<List<Emprestimos>> findByDataRetirada(
+	        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data1,
+	        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data2) {
+	    try {
 			List<Emprestimos> lista = this.emprestimosService.findByDataRetirada(data1, data2);
 			return new ResponseEntity<>(lista, HttpStatus.OK);
 		} catch (Exception e) {
@@ -113,9 +115,10 @@ public class EmprestimosController {
 	}
 	
 	@GetMapping("/findByDataDevolucao")
-	public ResponseEntity<List<Emprestimos>> findByDataDevolucao(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date data1,
-	        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date data2){
-		try {
+	public ResponseEntity<List<Emprestimos>> findByDataDevolucao(
+	        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data1,
+	        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data2) {
+	    try {
 			List<Emprestimos> lista = this.emprestimosService.findByDataDevolucao(data1, data2);
 			return new ResponseEntity<>(lista, HttpStatus.OK);
 		} catch (Exception e) {

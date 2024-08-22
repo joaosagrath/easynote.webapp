@@ -1,6 +1,7 @@
 package app.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import java.util.List;
@@ -30,8 +31,8 @@ public class Emprestimos {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	private LocalDate dataRetirada;
-	private LocalDate dataDevolucao;
+	private LocalDateTime dataRetirada;
+	private LocalDateTime dataDevolucao;
 	
 	private String situacao;
 	
@@ -46,5 +47,6 @@ public class Emprestimos {
 	@ManyToOne(cascade = CascadeType.MERGE)
 	@JsonIgnoreProperties("emprestimos")
 	private Usuarios usuario;
+
 	
 }

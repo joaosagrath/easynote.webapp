@@ -1,6 +1,7 @@
 package app.repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import java.util.List;
@@ -26,10 +27,10 @@ public interface EmprestimosRepository extends JpaRepository<Emprestimos, Long>{
 	
 
 	@Query("FROM Emprestimos e WHERE e.dataRetirada BETWEEN :data1 AND :data2")
-	public List<Emprestimos> findByDataRetirada(Date data1, Date data2);
+	public List<Emprestimos> findByDataRetirada(LocalDateTime data1, LocalDateTime data2);
 	
 	@Query("FROM Emprestimos e WHERE e.dataDevolucao BETWEEN :data1 AND :data2")
-	public List<Emprestimos> findByDataDevolucao(Date data1, Date data2);
+	public List<Emprestimos> findByDataDevolucao(LocalDateTime data1, LocalDateTime data2);
 	
 	@Query("FROM Emprestimos e WHERE e.aluno = :aluno AND e.situacao = 'Em Andamento'")
 	public List<Emprestimos> findByEmprestimosByAlunoAtivo(Alunos aluno);
@@ -40,7 +41,7 @@ public interface EmprestimosRepository extends JpaRepository<Emprestimos, Long>{
 	@Modifying
 	@Transactional
 	@Query("UPDATE Emprestimos e SET e.dataDevolucao = :date, e.situacao = :situacao WHERE e.id = :id")
-	public void encerrarEmprestimos(long id, LocalDate date, String situacao);
+	public void encerrarEmprestimos(long id, LocalDateTime date, String situacao);
 
 
 }

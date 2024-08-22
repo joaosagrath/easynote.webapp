@@ -1,6 +1,7 @@
 package app.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +35,7 @@ public class EmprestimosService {
 			throw new RuntimeException("Equipamento já possui empréstimo em andamento!");
 		}
 		
-		emprestimos.setDataRetirada(LocalDate.now());
+		emprestimos.setDataRetirada(LocalDateTime.now());
 		emprestimos.setSituacao("Em andamento");
 		this.emprestimosRepository.save(emprestimos);
 		return "Emprestimos cadastrado com sucesso";
@@ -82,7 +83,7 @@ public class EmprestimosService {
 	}*/
 	
 	public String encerrarEmprestimo(long id) {
-		LocalDate data = LocalDate.now();
+		LocalDateTime data = LocalDateTime.now();
 		String situacao = "Encerrado";
 		this.emprestimosRepository.encerrarEmprestimos(id, data, situacao);
 		return "Empréstimo encerrado com sucesso";
@@ -100,11 +101,11 @@ public class EmprestimosService {
 		return this.emprestimosRepository.findByEquipamentoPatrimonio(equipamento);
 	}
 	
-	public List<Emprestimos> findByDataRetirada(Date data1, Date data2){
+	public List<Emprestimos> findByDataRetirada(LocalDateTime data1, LocalDateTime data2){
 		return this.emprestimosRepository.findByDataRetirada(data1, data2);
 	}
 	
-	public List<Emprestimos> findByDataDevolucao(Date data1, Date data2){
+	public List<Emprestimos> findByDataDevolucao(LocalDateTime data1, LocalDateTime data2){
 		return this.emprestimosRepository.findByDataDevolucao(data1, data2);
 	}
 	
