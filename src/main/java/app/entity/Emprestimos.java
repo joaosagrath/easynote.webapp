@@ -36,6 +36,8 @@ public class Emprestimos {
 	
 	private String situacao;
 	
+	private String observacao;
+	
 	@ManyToOne(cascade = CascadeType.MERGE)
 	@JsonIgnoreProperties("emprestimos")
 	private Alunos aluno;
