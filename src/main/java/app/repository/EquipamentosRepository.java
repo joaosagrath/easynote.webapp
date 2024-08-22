@@ -20,6 +20,10 @@ public interface EquipamentosRepository extends JpaRepository<Equipamentos, Long
 	
 	public List<Equipamentos> findBySituacao(String situacao);
 	
+	public List<Equipamentos> findByAtivoTrue();
+	
+	public List<Equipamentos> findByAtivoFalse();
+	
 	@Query("FROM Equipamentos e WHERE e.dataAquisicao BETWEEN :data1 AND :data2")
 	public List<Equipamentos> findByDataAquisicao(Date data1, Date data2);
 	

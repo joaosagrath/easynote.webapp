@@ -95,5 +95,13 @@ public class EquipamentosService {
 	public List<Equipamentos> findBySituacao(String situacao) {
 		return this.findBySituacao(situacao);
 	}
+	
+	public List<Equipamentos> findEquipamentosAtivos(){
+		return this.equipamentosRepository.findByAtivoTrue();
+	}
+	
+	public List<Equipamentos> findEquipamentosInativos(){
+		return this.equipamentosRepository.findByAtivoFalse();
+	}
 
 }

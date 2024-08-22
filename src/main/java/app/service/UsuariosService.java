@@ -17,6 +17,7 @@ public class UsuariosService {
 	
 
 	public String save (Usuarios usuarios) {
+		usuarios.setAtivo(true);
 		this.usuariosRepository.save(usuarios);
 		return "Aluno cadastrado com sucesso!";
 	}
@@ -44,7 +45,7 @@ public class UsuariosService {
 	}
 	
 	public String delete (long id) {
-		this.usuariosRepository.deleteById(id);
+		this.usuariosRepository.desativarUsuarios(id);
 		return "Aluno deletado com sucesso!";
 	}
 	

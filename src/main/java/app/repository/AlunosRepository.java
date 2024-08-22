@@ -17,9 +17,13 @@ public interface AlunosRepository extends JpaRepository<Alunos, Long>{
 	
 	public Alunos findByCpf(String cpf);
 	
+	public List<Alunos> findByAtivoTrue();
+	
+	public List<Alunos> findByAtivoFalse();
+	
 	@Modifying
 	@Transactional
 	@Query("UPDATE Alunos a SET a.ativo = false WHERE a.id = :id")
-	public void desativarAlunos(long id);
+	public String desativarAlunos(long id);
 	
 }

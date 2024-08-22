@@ -49,7 +49,7 @@ public class Usuarios {
 	private String senha;
 	
 	
-	private String ativo;
+	private boolean ativo;
 	
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("usuario")

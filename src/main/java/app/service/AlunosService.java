@@ -89,5 +89,13 @@ public class AlunosService {
 	public List<Alunos> findByNome(String nome) {
 		return this.findByNome(nome);
 	}
+	
+	public List<Alunos> findAlunosAtivos(){
+		return this.alunosRepository.findByAtivoTrue();
+	}
+	
+	public List<Alunos> findAlunosInativos(){
+		return this.alunosRepository.findByAtivoFalse();
+	}
 
 }

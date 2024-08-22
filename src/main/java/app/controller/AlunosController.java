@@ -99,6 +99,26 @@ public class AlunosController {
 		}
 	}
 	
+	@GetMapping("/findByAlunoAtivo")
+	public ResponseEntity<List<Alunos>> findByAlunoAtivo(){
+		try {
+			List<Alunos> aluno = this.alunosService.findAlunosAtivos();
+			return new ResponseEntity<>(aluno, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+		}
+	}
+	
+	@GetMapping("/findByAlunoInativo")
+	public ResponseEntity<List<Alunos>> findByAlunoInativo(){
+		try {
+			List<Alunos> aluno = this.alunosService.findAlunosInativos();
+			return new ResponseEntity<>(aluno, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+		}
+	}
+	
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> delete(@PathVariable long id){
 		try {

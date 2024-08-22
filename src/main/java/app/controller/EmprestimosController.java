@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -101,7 +102,8 @@ public class EmprestimosController {
 	}
 	
 	@GetMapping("/findByDataRetirada")
-	public ResponseEntity<List<Emprestimos>> findByDataRetirada(@RequestParam Date data1, @RequestParam Date data2){
+	public ResponseEntity<List<Emprestimos>> findByDataRetirada(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date data1,
+	        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date data2){
 		try {
 			List<Emprestimos> lista = this.emprestimosService.findByDataRetirada(data1, data2);
 			return new ResponseEntity<>(lista, HttpStatus.OK);
@@ -111,7 +113,8 @@ public class EmprestimosController {
 	}
 	
 	@GetMapping("/findByDataDevolucao")
-	public ResponseEntity<List<Emprestimos>> findByDataDevolucao(@RequestParam Date data1, @RequestParam Date data2){
+	public ResponseEntity<List<Emprestimos>> findByDataDevolucao(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date data1,
+	        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date data2){
 		try {
 			List<Emprestimos> lista = this.emprestimosService.findByDataDevolucao(data1, data2);
 			return new ResponseEntity<>(lista, HttpStatus.OK);
@@ -120,10 +123,20 @@ public class EmprestimosController {
 		}
 	}
 	
-	@DeleteMapping("/delete/{id}")
+	/*@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> delete(@PathVariable long id){
 		try {
 			String mensagem = this.emprestimosService.delete(id);
+			return new ResponseEntity<>(mensagem, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+		}
+	}*/
+	
+	@DeleteMapping("/encerrar/{id}")
+	public ResponseEntity<String> encerrar(@PathVariable long id){
+		try {
+			String mensagem = this.emprestimosService.encerrarEmprestimo(id);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );

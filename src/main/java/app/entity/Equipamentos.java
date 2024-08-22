@@ -1,5 +1,6 @@
 package app.entity;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class Equipamentos {
 	private String modelo;
 	
 	@NotNull(message= "Por favor, informe a data de aquisição do equipamento")
-	private Date dataAquisicao;
+	private LocalDate dataAquisicao;
 	
 	private String observacao;
 	
