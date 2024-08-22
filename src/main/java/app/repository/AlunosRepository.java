@@ -24,6 +24,11 @@ public interface AlunosRepository extends JpaRepository<Alunos, Long>{
 	@Modifying
 	@Transactional
 	@Query("UPDATE Alunos a SET a.ativo = false WHERE a.id = :id")
-	public String desativarAlunos(long id);
+	public int desativarAlunos(long id);
+	
+	@Modifying
+	@Transactional
+	@Query("UPDATE Alunos a SET a.ativo = true WHERE a.id = :id")
+	public int reativarAlunos(long id);
 	
 }

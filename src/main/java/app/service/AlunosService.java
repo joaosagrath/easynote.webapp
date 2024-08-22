@@ -48,9 +48,10 @@ public class AlunosService {
 
 	}
 
-	public String delete(long id) {
+	public String delete(String ra) {
 
-		Alunos aluno = new Alunos();
+		Alunos aluno = this.alunosRepository.findByRa(ra);
+	    long id = aluno.getId();
 		aluno.setId(id);
 		System.out.println(id);
 		Emprestimos emp = new Emprestimos();
@@ -63,12 +64,26 @@ public class AlunosService {
 			throw new RuntimeException("Aluno possui empréstimo em andamento.");
 
 		} else {
-			this.alunosRepository.desativarAlunos(id);
-			System.out.println("Aluno foi desativado e salvo com sucesso.");
-			return "Aluno deletado com sucesso!";
+			int alunoDesativado = this.alunosRepository.desativarAlunos(id);
+		    if (alunoDesativado > 0) {
+		        return "Aluno desativado com sucesso!";
+		    } else {
+		        return "Falha ao desativar aluno.";
+		    }
 
 		}
 
+	}
+	
+	public String reativarAluno(String ra) {
+	    Alunos aluno = this.alunosRepository.findByRa(ra);
+	    long id = aluno.getId();
+	    int alunoReativado = this.alunosRepository.reativarAlunos(id);
+	    if (alunoReativado > 0) {
+	        return "Aluno reativado com sucesso!";
+	    } else {
+	        return "Falha ao reativar aluno.";
+	    }
 	}
 
 	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorAluno(Emprestimos emp) {

@@ -30,5 +30,10 @@ public interface EquipamentosRepository extends JpaRepository<Equipamentos, Long
 	@Modifying
 	@Transactional
 	@Query("UPDATE Equipamentos e SET e.ativo = false WHERE e.id = :id")
-	public void desativarEquipamentos(long id);
+	public int desativarEquipamentos(long id);
+	
+	@Modifying
+	@Transactional
+	@Query("UPDATE Equipamentos e SET e.ativo = true WHERE e.id = :id")
+	public int reativarEquipamentos(long id);
 }

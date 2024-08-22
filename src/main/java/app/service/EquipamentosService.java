@@ -50,8 +50,10 @@ public class EquipamentosService {
 
 	}
 
-	public String delete(long id) {
-		Equipamentos equipamento = new Equipamentos();
+	public String delete(String patrimonio) {
+		
+		Equipamentos equipamento = this.equipamentosRepository.findByPatrimonio(patrimonio);
+		long id = equipamento.getId();
 		equipamento.setId(id);
 		Emprestimos emp = new Emprestimos();
 		emp.setEquipamento(equipamento);
@@ -61,8 +63,13 @@ public class EquipamentosService {
 		if (lista != null && !lista.isEmpty()) {
 			throw new RuntimeException("Equipamento possui empréstimo em andamento!");
 		}else {
-			this.equipamentosRepository.desativarEquipamentos(id);
-			return "Equipamento deletado com sucesso!";
+			
+			int equipDesativado = this.equipamentosRepository.desativarEquipamentos(id);
+		    if (equipDesativado > 0) {
+		        return "Equipamento desativado com sucesso!";
+		    } else {
+		        return "Falha ao desativar equipamento.";
+		    }
 		}
 		
 		
@@ -73,6 +80,17 @@ public class EquipamentosService {
 		equipamento.setId(emp.getEquipamento().getId());
 		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByEquipamentoAtivo(equipamento);
 		return lista;
+	}
+	
+	public String reativarEquipamento(String patrimonio) {
+	    Equipamentos equipamento = this.equipamentosRepository.findByPatrimonio(patrimonio);
+	    long id = equipamento.getId();
+	    int equipamentoReativado = this.equipamentosRepository.reativarEquipamentos(id);
+	    if (equipamentoReativado > 0) {
+	        return "Equipamento reativado com sucesso!";
+	    } else {
+	        return "Falha ao reativar equipamento.";
+	    }
 	}
 	
 

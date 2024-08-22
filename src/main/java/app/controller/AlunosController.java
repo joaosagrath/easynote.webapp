@@ -119,13 +119,23 @@ public class AlunosController {
 		}
 	}
 	
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<String> delete(@PathVariable long id){
+	@PutMapping("/desativarAluno")
+	public ResponseEntity<String> delete(@RequestParam String ra){
 		try {
-			String mensagem = this.alunosService.delete(id);
+			String mensagem = this.alunosService.delete(ra);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST );
+		}
+	}
+	
+	@PutMapping("/reativarAluno")
+	public ResponseEntity<String> reativar(@RequestParam String ra){
+		try {
+			String mensagem = this.alunosService.reativarAluno(ra);
+			return new ResponseEntity<>(mensagem, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>("Deu erro!"+e.getMessage(), HttpStatus.BAD_REQUEST );
 		}
 	}
 	

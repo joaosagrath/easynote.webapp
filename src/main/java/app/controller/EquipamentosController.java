@@ -144,10 +144,20 @@ public class EquipamentosController {
 		}
 	}
 	
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<String> delete(@PathVariable long id){
+	@PutMapping("/desativarEquipamento")
+	public ResponseEntity<String> desativar(@RequestParam String patrimonio){
 		try {
-			String mensagem = this.equipamentosService.delete(id);
+			String mensagem = this.equipamentosService.delete(patrimonio);
+			return new ResponseEntity<>(mensagem, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST );
+		}
+	}
+	
+	@PutMapping("/reativarEquipamento")
+	public ResponseEntity<String> reativar(@RequestParam String patrimonio){
+		try {
+			String mensagem = this.equipamentosService.reativarEquipamento(patrimonio);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST );
