@@ -19,13 +19,13 @@ public class UsuariosService {
 	public String save (Usuarios usuarios) {
 		usuarios.setAtivo(true);
 		this.usuariosRepository.save(usuarios);
-		return "Aluno cadastrado com sucesso!";
+		return "Usuário cadastrado com sucesso!";
 	}
 	
 	public String update (Usuarios usuarios, long id) {
 		usuarios.setId(id);
 		this.usuariosRepository.save(usuarios);
-		return "Aluno atualizado com sucesso!";
+		return "Usuário atualizado com sucesso!";
 	}
 	
 	public Usuarios findById (long id) {
@@ -46,7 +46,7 @@ public class UsuariosService {
 	
 	public String delete (long id) {
 		this.usuariosRepository.desativarUsuarios(id);
-		return "Aluno deletado com sucesso!";
+		return "Usuário desativado com sucesso!";
 	}
 	
 	
