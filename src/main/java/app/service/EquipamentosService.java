@@ -1,14 +1,13 @@
 package app.service;
 
 import java.time.LocalDate;
-import java.util.Date;
+
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import app.entity.Alunos;
 import app.entity.Emprestimos;
 import app.entity.Equipamentos;
 import app.repository.EmprestimosRepository;
@@ -122,6 +121,7 @@ public class EquipamentosService {
 
 	public List<Equipamentos> findBySituacao(String situacao) {
 		return this.equipamentosRepository.findBySituacao(situacao);
+
 	}
 	
 	public List<Equipamentos> findEquipamentosAtivos(){
