@@ -1,5 +1,6 @@
 package app.controller;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -114,8 +115,8 @@ public class EquipamentosController {
 	}
 	
 	@GetMapping("/findByDataAquisicao")
-	public ResponseEntity<List<Equipamentos>> findByDataAquisicao(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date data1,
-	        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date data2){
+	public ResponseEntity<List<Equipamentos>> findByDataAquisicao(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data1,
+	        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data2){
 		try {
 			List<Equipamentos> lista = this.equipamentosService.findByDataAquisicao(data1, data2);
 			return new ResponseEntity<>(lista, HttpStatus.OK);

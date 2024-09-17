@@ -108,17 +108,6 @@ public class EmprestimoControllerTest {
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
 	}
-
-	/*@Test
-	@DisplayName("Update Empréstimo Corretamente")
-	void updateEmprestimo() {
-		Mockito.when(emprestimoRepository.save(emprestimoAtualizado)).thenReturn(emprestimoAtualizado);
-		Mockito.when(emprestimoService.update(emprestimoAtualizado, 1)).thenReturn("Empréstimo atualizado com sucesso!");
-
-		ResponseEntity<String> response = emprestimoController.update(emprestimoAtualizado, 1);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals("Empréstimo atualizado com sucesso!", response.getBody());
-	}*/
 	
 	@Test
 	@DisplayName("FindById - ID Válido")
@@ -129,11 +118,129 @@ public class EmprestimoControllerTest {
 	}
 	
 	@Test
-	@DisplayName("FindById - ID Válido")
+	@DisplayName("FindById - ID Inválido")
 	void findByIdInvalido() {
-		Mockito.when(emprestimoRepository.findById(99L)).thenReturn(Optional.of(emprestimo));
+		Mockito.when(emprestimoRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(emprestimo));
 		ResponseEntity<Emprestimos> lista = emprestimoController.findById(1);
 		assertEquals(HttpStatus.OK, lista.getStatusCode());
 	}
+	
+	@Test
+	@DisplayName("FindAll")
+	void findAll() {
+		Mockito.when(emprestimoRepository.findAll()).thenReturn(List.of(emprestimo));
+		ResponseEntity<List<Emprestimos>> lista = emprestimoController.findAll();
+		assertEquals(HttpStatus.OK, lista.getStatusCode());
+	}
+	
+	@Test
+	@DisplayName("FindAll - Lista vazia")
+	void findAllListaVazia() {
+		Mockito.when(emprestimoRepository.findAll()).thenThrow(new RuntimeException("Erro ao retornar empréstimos!"));
+		ResponseEntity<List<Emprestimos>> lista = emprestimoController.findAll();
+		assertEquals(HttpStatus.BAD_REQUEST, lista.getStatusCode());
+	}
+	
+	@Test
+	@DisplayName("FindBy - Situação Correta")
+	void situacaoCorreta() {
+		Mockito.when(emprestimoRepository.findBySituacao("Em Andamento")).thenReturn(List.of(emprestimo));
+		ResponseEntity<List<Emprestimos>> lista = emprestimoController.findBySituacao("Em Andamento");
+		assertEquals(HttpStatus.OK, lista.getStatusCode());
+	}
+	
+	@Test
+	@DisplayName("FindBy - Situação incorreta")
+	void situacaoInexistente() {
+		Mockito.when(emprestimoRepository.findBySituacao("Em Aberto")).thenThrow(new RuntimeException("Erro ao retornar empréstimos!"));
+		ResponseEntity<List<Emprestimos>> lista = emprestimoController.findBySituacao("Em Aberto");
+		assertEquals(HttpStatus.BAD_REQUEST, lista.getStatusCode());
+	}
+	
+	@Test
+	@DisplayName("FindBy - RA Aluno Correto")
+	void raCorreto() {
+		Mockito.when(emprestimoRepository.findByAlunoRa("505233")).thenReturn(List.of(emprestimo));
+		ResponseEntity<List<Emprestimos>> lista = emprestimoController.findByAluno("505233");
+		assertEquals(HttpStatus.OK, lista.getStatusCode());
+	}
+	
+	@Test
+	@DisplayName("FindBy - RA Aluno Incorreto")
+	void raIncorreto() {
+		Mockito.when(emprestimoRepository.findByAlunoRa("555555")).thenThrow(new RuntimeException("Erro ao retornar empréstimos!"));
+		ResponseEntity<List<Emprestimos>> lista = emprestimoController.findByAluno("555555");
+		assertEquals(HttpStatus.BAD_REQUEST, lista.getStatusCode());
+	}
+	
+	@Test
+	@DisplayName("FindBy - Patrimonio Equipamento Correto")
+	void patrimonioCorreto() {
+		Mockito.when(emprestimoRepository.findByEquipamentoPatrimonio("123456")).thenReturn(List.of(emprestimo));
+		ResponseEntity<List<Emprestimos>> lista = emprestimoController.findByEquipamento("123456");
+		assertEquals(HttpStatus.OK, lista.getStatusCode());
+	}
+	
+	@Test
+	@DisplayName("FindBy - Patrimonio Equipamento Incorreto")
+	void patrimonioIncorreto() {
+		Mockito.when(emprestimoRepository.findByEquipamentoPatrimonio("987654")).thenThrow(new RuntimeException("Erro ao retornar empréstimos!"));
+		ResponseEntity<List<Emprestimos>> lista = emprestimoController.findByEquipamento("987654");
+		assertEquals(HttpStatus.BAD_REQUEST, lista.getStatusCode());
+	}
+	
+	@Test
+	@DisplayName("FindBy - Data Retirada Válida")
+	void dataRetValida() {
+		LocalDateTime dataRetirada = LocalDateTime.now();
+		LocalDateTime dataDevolucao = dataRetirada.plusHours(2);
+
+		Mockito.when(emprestimoRepository.findByDataRetirada(dataRetirada, dataDevolucao)).thenReturn(List.of(emprestimo));
+		ResponseEntity<List<Emprestimos>> lista = emprestimoController.findByDataRetirada(dataRetirada, dataDevolucao);
+		assertEquals(HttpStatus.OK, lista.getStatusCode());
+	}
+	
+	@Test
+	@DisplayName("FindBy - Data Retirada Inválida")
+	void dataRetInvalida() {
+		LocalDateTime dataRetirada = LocalDateTime.of(2024, 8, 5, 20, 55);
+		LocalDateTime dataDevolucao = dataRetirada.plusHours(2);
+		Mockito.when(emprestimoRepository.findByDataRetirada(dataRetirada, dataDevolucao)).thenThrow(new RuntimeException("Erro ao retornar empréstimos!"));
+		ResponseEntity<List<Emprestimos>> lista = emprestimoController.findByDataRetirada(dataRetirada, dataDevolucao);
+		assertEquals(HttpStatus.BAD_REQUEST, lista.getStatusCode());
+	}
+	
+
+	@Test
+	@DisplayName("FindBy - Data Devolucao Válida")
+	void dataDevValida() {
+		LocalDateTime dataRetirada = LocalDateTime.now();
+		LocalDateTime dataDevolucao = dataRetirada.plusHours(2);
+
+		Mockito.when(emprestimoRepository.findByDataDevolucao(dataRetirada, dataDevolucao)).thenReturn(List.of(emprestimo));
+		ResponseEntity<List<Emprestimos>> lista = emprestimoController.findByDataDevolucao(dataRetirada, dataDevolucao);
+		assertEquals(HttpStatus.OK, lista.getStatusCode());
+	}
+	
+	@Test
+	@DisplayName("FindBy - Data Devolucao Inválida")
+	void dataDevInvalida() {
+		LocalDateTime dataRetirada = LocalDateTime.of(2024, 8, 5, 20, 55);
+		LocalDateTime dataDevolucao = dataRetirada.plusHours(2);
+		Mockito.when(emprestimoRepository.findByDataDevolucao(dataRetirada, dataDevolucao)).thenThrow(new RuntimeException("Erro ao retornar empréstimos!"));
+		ResponseEntity<List<Emprestimos>> lista = emprestimoController.findByDataDevolucao(dataRetirada, dataDevolucao);
+		assertEquals(HttpStatus.BAD_REQUEST, lista.getStatusCode());
+	}
+	
+	@Test
+	@DisplayName("Encerrar Empréstimo Válido")
+	void encerrar() {
+		
+		//Mockito.when(emprestimoRepository.encerrarEmprestimos(1, LocalDateTime.now(), "Encerrado")).thenReturn("Empréstimo encerrado com sucesso");
+		ResponseEntity<String> lista = emprestimoController.encerrar(1);
+		assertEquals(HttpStatus.OK, lista.getStatusCode());
+		assertEquals("Empréstimo encerrado com sucesso", lista.getBody());
+	}
+
 
 }

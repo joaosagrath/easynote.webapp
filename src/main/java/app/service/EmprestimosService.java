@@ -77,7 +77,7 @@ public class EmprestimosService {
 		if(optional.isPresent()) {
 			return optional.get();
 		}else
-			return null;
+			throw new RuntimeException("ID inválido!");
 		
 	}
 	
