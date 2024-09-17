@@ -37,8 +37,14 @@ public class EmprestimosService {
 		
 		emprestimos.setDataRetirada(LocalDateTime.now());
 		emprestimos.setSituacao("Em andamento");
-		this.emprestimosRepository.save(emprestimos);
-		return "Emprestimos cadastrado com sucesso";
+		Emprestimos emp = this.emprestimosRepository.save(emprestimos);
+		 
+		if(emp != null) {
+			return "Empréstimo salvo com sucesso!";
+		}else {
+			throw new RuntimeException("Erro ao salvar empréstimo!");
+		}
+	
 	}
 	
 	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorAluno(Emprestimos emp){
@@ -57,8 +63,12 @@ public class EmprestimosService {
 	
 	public String update (Emprestimos emprestimos, long id) {
 		emprestimos.setId(id);
-		this.emprestimosRepository.save(emprestimos);
-		return "Atualizado com sucesso";
+		Emprestimos emp = this.emprestimosRepository.save(emprestimos);
+		if(emp != null) {
+			return "Empréstimo atualizado com sucesso!";
+		}else {
+			throw new RuntimeException("Erro ao atualizar empréstimo!");
+		}
 	}
 	
 	public Emprestimos findById (long id) {

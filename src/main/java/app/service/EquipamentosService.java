@@ -24,14 +24,23 @@ public class EquipamentosService {
 
 	public String save(Equipamentos equipamentos) {
 		equipamentos.setAtivo(true);
-		this.equipamentosRepository.save(equipamentos);
-		return "Equipamentos cadastrado com sucesso";
+		Equipamentos equip = this.equipamentosRepository.save(equipamentos);
+		if(equip != null) {
+		   return "Equipamento salvo com sucesso!";
+		}else {
+			throw new RuntimeException("Erro ao salvar equipamento!");
+		}
+		
 	}
 
 	public String update(Equipamentos equipamentos, long id) {
 		equipamentos.setId(id);
-		this.equipamentosRepository.save(equipamentos);
-		return "Atualizado com sucesso";
+		Equipamentos equip = this.equipamentosRepository.save(equipamentos);
+		if(equip != null) {
+			   return "Equipamento salvo com sucesso!";
+			}else {
+				throw new RuntimeException("Erro ao salvar equipamento!");
+			}
 	}
 
 	public Equipamentos findById(long id) {
@@ -68,7 +77,7 @@ public class EquipamentosService {
 		    if (equipDesativado > 0) {
 		        return "Equipamento desativado com sucesso!";
 		    } else {
-		        return "Falha ao desativar equipamento.";
+		        throw new RuntimeException("Erro ao desativar equipamento!");
 		    }
 		}
 		
@@ -89,7 +98,7 @@ public class EquipamentosService {
 	    if (equipamentoReativado > 0) {
 	        return "Equipamento reativado com sucesso!";
 	    } else {
-	        return "Falha ao reativar equipamento.";
+	        throw new RuntimeException("Erro ao reativar equipamento!");
 	    }
 	}
 	
