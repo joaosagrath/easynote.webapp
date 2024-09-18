@@ -96,7 +96,7 @@ public class UsuariosController {
 			String mensagem = this.usuarioService.delete(id);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST );
 		}
 	}
 	

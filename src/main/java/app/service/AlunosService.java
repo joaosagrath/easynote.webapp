@@ -1,4 +1,4 @@
-package app.service;
+ package app.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,14 +22,24 @@ public class AlunosService {
 
 	public String save(Alunos alunos) {
 		alunos.setAtivo(true);
-		this.alunosRepository.save(alunos);
-		return "Aluno cadastrado com sucesso!";
+		Alunos alunoSalvo = this.alunosRepository.save(alunos);
+		
+		if(alunoSalvo != null) {
+		  return "Aluno salvo com sucesso!";
+		}else {
+		  throw new RuntimeException("Erro ao salvar aluno!");
+		}
+		
 	}
 
 	public String update(Alunos alunos, long id) {
 		alunos.setId(id);
-		this.alunosRepository.save(alunos);
-		return "Aluno atualizado com sucesso!";
+		Alunos alunoAtualizado = this.alunosRepository.save(alunos);
+		if(alunoAtualizado != null) {
+			  return "Aluno atualizado com sucesso!";
+			}else {
+			  throw new RuntimeException("Erro ao atualizar aluno!");
+			}
 	}
 
 	public Alunos findById(long id) {
@@ -68,7 +78,7 @@ public class AlunosService {
 		    if (alunoDesativado > 0) {
 		        return "Aluno desativado com sucesso!";
 		    } else {
-		        return "Falha ao desativar aluno.";
+		        throw new RuntimeException("Erro ao desativar aluno!");
 		    }
 
 		}
@@ -82,7 +92,7 @@ public class AlunosService {
 	    if (alunoReativado > 0) {
 	        return "Aluno reativado com sucesso!";
 	    } else {
-	        return "Falha ao reativar aluno.";
+	        throw new RuntimeException("Erro ao reativar aluno");
 	    }
 	}
 
