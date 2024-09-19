@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -77,6 +78,7 @@ public class EmprestimoServiceTest {
 			// Mockando os métodos do repository
 			Mockito.when(emprestimoRepository.save(emprestimo)).thenReturn(emprestimo);
 			Mockito.when(emprestimoRepository.findAll()).thenReturn(List.of(emprestimo));
+			Mockito.when(emprestimoRepository.findById(1L)).thenReturn(Optional.of(emprestimo));
 
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -96,6 +98,22 @@ public class EmprestimoServiceTest {
 	    
 	    String response = this.emprestimoService.save(emprestimo);
 	    assertEquals("Empréstimo salvo com sucesso!", response);
+	}
+	
+	@Test
+	@DisplayName("Save empréstimo incorreto")
+	void salvarEmpIncorreto() {
+	    Mockito.when(emprestimoRepository.findByEmprestimosByAlunoAtivo(Mockito.any(Alunos.class)))
+	           .thenReturn(Collections.emptyList());
+	    
+	    Mockito.when(emprestimoRepository.findByEmprestimosByEquipamentoAtivo(Mockito.any(Equipamentos.class)))
+	           .thenReturn(Collections.emptyList());
+	    
+	    Mockito.when(emprestimoRepository.save(emprestimo)).thenReturn(null);
+	    
+	    assertThrows(Exception.class, () -> {
+	    	String response = this.emprestimoService.save(emprestimo);
+	    });
 	}
 	
 	@Test
@@ -152,5 +170,87 @@ public class EmprestimoServiceTest {
         assertEquals("Erro ao atualizar empréstimo!", thrown.getMessage());
 
     }
+    
+    @Test
+    @DisplayName("FindById - Correto")
+    void findById() {
+    	Mockito.when(emprestimoRepository.findById(1L)).thenReturn(Optional.of(emprestimo));
+    	
+    	Emprestimos emp = emprestimoService.findById(1);
+    	
+    	assertEquals(emprestimo, emp);
+    }
+    
+    @Test
+    @DisplayName("FindById - Incorreto")
+    void findByIdIncorreto() {
+    	Mockito.when(emprestimoRepository.findById(99L)).thenReturn(Optional.empty());
+    	
+    	assertThrows(Exception.class, () -> {
+    		Emprestimos emp = emprestimoService.findById(99);
+    	});
+    }
+    
+    @Test
+    @DisplayName("FindBy - Situacao Correta")
+    void findBySituacaoCorreta() {
+    	Mockito.when(emprestimoRepository.findBySituacao("Em Andamento")).thenReturn(List.of(emprestimo));
+    	List<Emprestimos> emps = emprestimoService.findBySituacao("Em Andamento");
+    	
+    	assertEquals(1, emps.size());
+    }
+    
+    
+    @Test
+    @DisplayName("FindAll")
+    void findAll() {
+    	Mockito.when(emprestimoRepository.findAll()).thenReturn(List.of(emprestimo));
+    	List<Emprestimos> emps = emprestimoService.findAll();
+    	assertEquals(1, emps.size());
+    }
+    
+    @Test
+    @DisplayName("FindBy - RA aluno")
+    void findRaAluno() {
+    	Mockito.when(emprestimoRepository.findByAlunoRa("505233")).thenReturn(List.of(emprestimo));
+    	List<Emprestimos> emps = emprestimoService.findByAluno("505233");
+    	assertEquals(1, emps.size());
+    }
+    
+    @Test
+    @DisplayName("FindBy - Patrimonio")
+    void findPatrimonio() {
+    	Mockito.when(emprestimoRepository.findByEquipamentoPatrimonio("123456")).thenReturn(List.of(emprestimo));
+    	List<Emprestimos> emps = emprestimoService.findByEquipamento("123456");
+    	assertEquals(1, emps.size());
+    }
+    
+    @Test
+    @DisplayName("FindBy - Data Retirada")
+    void findDataRetirada() {
+    	LocalDateTime data1 = LocalDateTime.now();
+    	LocalDateTime data2 = data1.plusHours(2);
+    	Mockito.when(emprestimoRepository.findByDataRetirada(data1, data2)).thenReturn(List.of(emprestimo));
+    	List<Emprestimos> emps = emprestimoService.findByDataRetirada(data1, data2);
+    	assertEquals(1, emps.size());
+    }
+    
+    @Test
+    @DisplayName("FindBy - Data Devolucao")
+    void findDataDevolucao() {
+    	LocalDateTime data1 = LocalDateTime.now();
+    	LocalDateTime data2 = data1.plusHours(2);
+    	Mockito.when(emprestimoRepository.findByDataDevolucao(data1, data2)).thenReturn(List.of(emprestimo));
+    	List<Emprestimos> emps = emprestimoService.findByDataDevolucao(data1, data2);
+    	assertEquals(1, emps.size());
+    }
+    
+    @Test
+    @DisplayName("Encerrar empréstimo")
+    void encerrarEmprestimo() {
+    	String retorno = emprestimoService.encerrarEmprestimo(1);
+    	assertEquals("Empréstimo encerrado com sucesso", retorno);
+    }
+  
 	
 }
