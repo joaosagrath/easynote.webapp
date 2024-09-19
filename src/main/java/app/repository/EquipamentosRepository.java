@@ -1,5 +1,6 @@
 package app.repository;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public interface EquipamentosRepository extends JpaRepository<Equipamentos, Long
 	public List<Equipamentos> findByAtivoFalse();
 	
 	@Query("FROM Equipamentos e WHERE e.dataAquisicao BETWEEN :data1 AND :data2")
-	public List<Equipamentos> findByDataAquisicao(Date data1, Date data2);
+	public List<Equipamentos> findByDataAquisicao(LocalDate data1, LocalDate data2);
 	
 	@Modifying
 	@Transactional
