@@ -288,12 +288,8 @@ public class EmprestimoControllerTest {
 	@Test
 	@DisplayName("Encerrar Empréstimo Válido")
 	void encerrar() {
-
-		// Mockito.when(emprestimoRepository.encerrarEmprestimos(1, LocalDateTime.now(),
-		// "Encerrado")).thenReturn("Empréstimo encerrado com sucesso");
 		ResponseEntity<String> lista = emprestimoController.encerrar(1);
 		assertEquals(HttpStatus.OK, lista.getStatusCode());
-		// assertEquals("Empréstimo encerrado com sucesso", lista.getBody());
 	}
 	
 	@Test

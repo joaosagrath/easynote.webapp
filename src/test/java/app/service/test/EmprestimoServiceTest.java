@@ -20,6 +20,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 
 import app.entity.Alunos;
 import app.entity.Emprestimos;
@@ -181,15 +182,13 @@ public class EmprestimoServiceTest {
     	assertEquals(emprestimo, emp);
     }
     
-    /*@Test
+    @Test
     @DisplayName("FindById - Incorreto")
     void findByIdIncorreto() {
     	Mockito.when(emprestimoRepository.findById(99L)).thenReturn(Optional.empty());
-    	
-    	assertThrows(Exception.class, () -> {
-    		Emprestimos emp = emprestimoService.findById(99);
-    	});
-    }*/
+    	Emprestimos emp = emprestimoService.findById(99);
+    	assertEquals(null, emp);
+    }
     
     @Test
     @DisplayName("FindBy - Situacao Correta")

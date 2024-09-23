@@ -86,12 +86,7 @@ public class EmprestimosService {
 		return this.emprestimosRepository.findAll();
 		
 	}
-	
-	/*public String delete (long id) {
-		this.emprestimosRepository.deleteById(id);
-		return "Veículo deletado com sucesso!";
-	}*/
-	
+
 	public String encerrarEmprestimo(long id) {
 		LocalDateTime data = LocalDateTime.now();
 		String situacao = "Encerrado";
