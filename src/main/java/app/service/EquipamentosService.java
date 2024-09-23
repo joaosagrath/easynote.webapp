@@ -83,7 +83,7 @@ public class EquipamentosService {
 		
 	}
 
-	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorEquip(Emprestimos emp){
+	public List<Emprestimos> encontrarEmprestimoEmAndamentoPorEquip(Emprestimos emp){
 		Equipamentos equipamento = new Equipamentos();
 		equipamento.setId(emp.getEquipamento().getId());
 		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByEquipamentoAtivo(equipamento);

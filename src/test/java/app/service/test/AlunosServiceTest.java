@@ -7,6 +7,8 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -238,5 +240,60 @@ public class AlunosServiceTest {
         List<Alunos> result = alunosService.findByNome("Kanye");
         assertEquals(1, result.size());
         assertEquals(aluno1, result.get(0));
+    }
+    
+    @Test
+    void calcularIdade_DeveRetornarIdadeCorreta_QuandoAlunoExiste() {
+        // Dados de um aluno de 20 anos
+        long alunoId = 1L;
+        Alunos aluno = new Alunos();
+        aluno.setId(alunoId);
+        aluno.setNome("João");
+        aluno.setDataNascimento(Date.from(LocalDate.of(2003, 9, 23) // Data de nascimento
+                .atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        // Mock do método findById do repositório
+        when(alunosRepository.findById(alunoId)).thenReturn(Optional.of(aluno));
+
+        // Executa o método a ser testado
+        String resultado = alunosService.calcularIdade(alunoId);
+
+        // Verifica o resultado esperado
+        assertEquals("A idade do aluno João é: 21 anos.", resultado);
+    }
+
+    @Test
+    void calcularIdade_DeveLancarExcecao_QuandoAlunoNaoEncontrado() {
+        long alunoId = 1L;
+
+        // Mock do método findById para retornar vazio (aluno não encontrado)
+        when(alunosRepository.findById(alunoId)).thenReturn(Optional.empty());
+
+        // Executa o método e verifica a exceção
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            alunosService.calcularIdade(alunoId);
+        });
+
+        // Verifica a mensagem de erro
+        assertEquals("Aluno não encontrado ou data de nascimento não informada.", exception.getMessage());
+    }
+
+    @Test
+    void calcularIdade_DeveLancarExcecao_QuandoDataNascimentoNula() {
+        long alunoId = 1L;
+        Alunos aluno = new Alunos();
+        aluno.setId(alunoId);
+        aluno.setNome("Maria");
+
+        // Mock do método findById para retornar um aluno com data de nascimento nula
+        when(alunosRepository.findById(alunoId)).thenReturn(Optional.of(aluno));
+
+        // Executa o método e verifica a exceção
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            alunosService.calcularIdade(alunoId);
+        });
+
+        // Verifica a mensagem de erro
+        assertEquals("Aluno não encontrado ou data de nascimento não informada.", exception.getMessage());
     }
 }
