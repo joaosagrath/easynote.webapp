@@ -250,6 +250,27 @@ public class EmprestimoServiceTest {
     	String retorno = emprestimoService.encerrarEmprestimo(1);
     	assertEquals("Empréstimo encerrado com sucesso", retorno);
     }
+    
+    @Test
+    @DisplayName("TESTE UNITÁRIO - TEMPO DE USO")
+    void tempoDeUso() {
+        // Simular o objeto 'emprestimoAtualizado'
+        Emprestimos emprestimoAtualizado = new Emprestimos();
+        
+        // Definir data de retirada e devolução para teste
+        LocalDateTime dataRetirada = LocalDateTime.of(2024, 9, 20, 10, 0); // 20 de Setembro, 10h00
+        LocalDateTime dataDevolucao = LocalDateTime.of(2024, 9, 22, 15, 30); // 22 de Setembro, 15h30
+        
+        emprestimoAtualizado.setDataRetirada(dataRetirada);
+        emprestimoAtualizado.setDataDevolucao(dataDevolucao);
+        
+        // Chamar o método a ser testado
+        String mensagem = emprestimoService.tempodeUso(emprestimoAtualizado);
+        
+        // Verificar o resultado esperado
+        String resultadoEsperado = "2 dias, 5 horas, 30 minutos"; // Tempo esperado entre as duas datas
+        assertEquals(resultadoEsperado, mensagem);
+    }
   
 	
 }
