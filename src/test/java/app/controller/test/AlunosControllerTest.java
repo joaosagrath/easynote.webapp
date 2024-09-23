@@ -196,6 +196,8 @@ public class AlunosControllerTest {
         assertEquals(null, response.getBody());
     }
 
+    
+
     @Test
     @DisplayName("Test - buscar aluno por CPF corretamente")
     void testFindByCpfCorretamente() {

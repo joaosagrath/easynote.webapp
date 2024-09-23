@@ -112,7 +112,7 @@ public class AlunosService {
 	}
 
 	public List<Alunos> findByNome(String nome) {
-		return this.findByNome(nome);
+	    return this.alunosRepository.findByNomeContains(nome);
 	}
 	
 	public List<Alunos> findAlunosAtivos(){

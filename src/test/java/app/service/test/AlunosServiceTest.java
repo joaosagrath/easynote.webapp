@@ -90,7 +90,6 @@ public class AlunosServiceTest {
 
         assertEquals("Erro ao salvar aluno", thrown.getMessage());
     }
-
     @Test
     @DisplayName("Test - atualizar aluno corretamente")
     void testUpdateAlunoCorretamente() {
@@ -106,11 +105,11 @@ public class AlunosServiceTest {
         when(alunosRepository.findById(anyLong())).thenReturn(Optional.of(aluno1));
         when(alunosRepository.save(any(Alunos.class))).thenThrow(new RuntimeException("Erro ao atualizar aluno"));
 
-        Exception exception = assertThrows(RuntimeException.class, () -> {
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
             alunosService.update(aluno1, 1L);
         });
 
-        assertEquals("Erro ao atualizar aluno", exception.getMessage());
+        assertEquals("Erro ao atualizar aluno", thrown.getMessage());
     }
 
     @Test
@@ -146,6 +145,20 @@ public class AlunosServiceTest {
 
         String result = alunosService.delete("505567");
         assertEquals("Aluno desativado com sucesso!", result);
+    }
+    
+    @Test
+    @DisplayName("Test - erro ao desativar aluno")
+    void testErroDesativarAluno() {
+        when(alunosRepository.findByRa(anyString())).thenReturn(aluno1);
+        when(emprestimosRepository.findByEmprestimosByAlunoAtivo(any(Alunos.class))).thenReturn(Collections.emptyList());
+        when(alunosRepository.desativarAlunos(anyLong())).thenReturn(0); // Simular erro
+        
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            alunosService.delete("505567");
+        });
+
+        assertEquals("Erro ao desativar aluno!", exception.getMessage());
     }
 
     @Test
@@ -216,5 +229,14 @@ public class AlunosServiceTest {
         List<Alunos> result = alunosService.findAlunosInativos();
         assertEquals(1, result.size());
         assertEquals(aluno2, result.get(0));
+    }
+    
+    @Test
+    @DisplayName("Test - buscar aluno por nome")
+    void testFindByNome() {
+        when(alunosRepository.findByNomeContains(anyString())).thenReturn(Arrays.asList(aluno1));
+        List<Alunos> result = alunosService.findByNome("Kanye");
+        assertEquals(1, result.size());
+        assertEquals(aluno1, result.get(0));
     }
 }

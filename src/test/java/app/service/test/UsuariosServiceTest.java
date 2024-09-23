@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -108,7 +109,7 @@ public class UsuariosServiceTest {
         
     }
     
-    /*@Test
+    @Test
     @DisplayName("Test - buscar usuário por nome")
     void testFindByNome() {
         // Simula o comportamento esperado do repositório
@@ -122,9 +123,9 @@ public class UsuariosServiceTest {
 
         // Verifica se o usuário retornado é o esperado
         assertEquals(usuario1, result.get(0));
-    }*/
+    }
     
-    /* @Test
+    @Test
     @DisplayName("Test - erro ao buscar usuário por nome inexistente")
     void testFindByNomeInexistente() {
         // Simula um retorno vazio quando o nome não é encontrado
@@ -135,7 +136,7 @@ public class UsuariosServiceTest {
 
         // Verifica se o resultado está vazio
         assertEquals(0, result.size());
-    }*/
+    }
 
     @Test
     @DisplayName("Test - erro ao buscar usuário por CPF inexistente")
@@ -150,7 +151,7 @@ public class UsuariosServiceTest {
         assertEquals(null, result);
     }
 
-    /* @Test
+    @Test
     @DisplayName("Test - erro ao buscar usuário por ID inexistente")
     void testFindByIdInexistente() {
         // Simula que o repositório retorna Optional vazio ao buscar um ID inexistente
@@ -163,7 +164,7 @@ public class UsuariosServiceTest {
 
         // Verifica a mensagem da exceção
         assertEquals("Usuário não encontrado", thrown.getMessage());
-    }*/
+    }
 
     @Test
     @DisplayName("Test - erro ao atualizar usuário inexistente")
@@ -194,5 +195,30 @@ public class UsuariosServiceTest {
 
         // Verifica a mensagem da exceção
         assertEquals("Erro ao desativar usuário: Erro ao desativar usuário", thrown.getMessage());
+    }
+    
+    @Test
+    @DisplayName("Test - verificar se desativarUsuarios é chamado")
+    void testDeleteUsuarioVerificaMetodoChamado() {
+        when(usuariosRepository.findById(anyLong())).thenReturn(Optional.of(usuario1));
+        
+        usuariosService.delete(1L);
+        
+        verify(usuariosRepository).desativarUsuarios(1L);
+    }
+    
+    @Test
+    @DisplayName("Test - erro ao deletar usuário inexistente")
+    void testDeleteUsuarioInexistente() {
+        // Simula que o repositório retorna Optional vazio ao buscar um ID inexistente
+        when(usuariosRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // Verifica se uma exceção é lançada ao tentar deletar um usuário que não existe
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
+            usuariosService.delete(999L);
+        });
+
+        // Verifica a mensagem da exceção
+        assertEquals("Usuário não encontrado", thrown.getMessage());
     }
 }
