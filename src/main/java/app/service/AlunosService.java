@@ -1,5 +1,8 @@
 package app.service;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,7 +115,7 @@ public class AlunosService {
 	}
 
 	public List<Alunos> findByNome(String nome) {
-		return this.findByNome(nome);
+	    return this.alunosRepository.findByNomeContains(nome);
 	}
 	
 	public List<Alunos> findAlunosAtivos(){
@@ -122,5 +125,21 @@ public class AlunosService {
 	public List<Alunos> findAlunosInativos(){
 		return this.alunosRepository.findByAtivoFalse();
 	}
-
+	
+	public String calcularIdade(long id) {
+        Alunos aluno = this.findById(id);
+        
+        if (aluno != null && aluno.getDataNascimento() != null) {
+            LocalDate dataNascimento = aluno.getDataNascimento()
+                                           .toInstant()
+                                           .atZone(ZoneId.systemDefault())
+                                           .toLocalDate();
+            LocalDate dataAtual = LocalDate.now();
+            int idade = Period.between(dataNascimento, dataAtual).getYears();
+            
+            return "A idade do aluno " + aluno.getNome() + " é: " + idade + " anos.";
+        } else {
+            throw new RuntimeException("Aluno não encontrado ou data de nascimento não informada.");
+        }
+    }
 }

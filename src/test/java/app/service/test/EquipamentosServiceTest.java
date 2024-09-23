@@ -3,7 +3,11 @@ package app.service.test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import app.entity.Emprestimos;
 import app.entity.Equipamentos;
 import app.repository.EmprestimosRepository;
 import app.repository.EquipamentosRepository;
@@ -182,4 +187,143 @@ public class EquipamentosServiceTest {
         assertEquals(1, result.size());
         verify(equipamentosRepository, times(1)).findByAtivoFalse();
     }
+    
+    @Test
+    public void testDelete_EquipamentoComEmprestimoEmAndamento() {
+        // Given
+        String patrimonio = "12345";
+        Equipamentos equipamento = new Equipamentos();
+        equipamento.setId(1L);
+        when(equipamentosRepository.findByPatrimonio(patrimonio)).thenReturn(equipamento);
+
+        List<Emprestimos> emprestimosList = new ArrayList<>();
+        emprestimosList.add(new Emprestimos());
+        when(emprestimosRepository.findByEmprestimosByEquipamentoAtivo(any(Equipamentos.class)))
+            .thenReturn(emprestimosList);
+
+        // When & Then
+        assertThrows(RuntimeException.class, () -> {
+            equipamentosService.delete(patrimonio);
+        });
+
+        verify(equipamentosRepository, never()).desativarEquipamentos(anyLong());
+    }
+
+    @Test
+    public void testDelete_SemEmprestimoEmAndamento() {
+        // Given
+        String patrimonio = "12345";
+        Equipamentos equipamento = new Equipamentos();
+        equipamento.setId(1L);
+        when(equipamentosRepository.findByPatrimonio(patrimonio)).thenReturn(equipamento);
+
+        List<Emprestimos> emprestimosList = new ArrayList<>();
+        when(emprestimosRepository.findByEmprestimosByEquipamentoAtivo(any(Equipamentos.class)))
+            .thenReturn(emprestimosList);
+
+        when(equipamentosRepository.desativarEquipamentos(1L)).thenReturn(1);
+
+        // When
+        String result = equipamentosService.delete(patrimonio);
+
+        // Then
+        assertEquals("Equipamento desativado com sucesso!", result);
+        verify(equipamentosRepository).desativarEquipamentos(1L);
+    }
+
+    @Test
+    public void testReativarEquipamento_Sucesso() {
+        // Given
+        String patrimonio = "12345";
+        Equipamentos equipamento = new Equipamentos();
+        equipamento.setId(1L);
+        when(equipamentosRepository.findByPatrimonio(patrimonio)).thenReturn(equipamento);
+        when(equipamentosRepository.reativarEquipamentos(1L)).thenReturn(1);
+
+        // When
+        String result = equipamentosService.reativarEquipamento(patrimonio);
+
+        // Then
+        assertEquals("Equipamento reativado com sucesso!", result);
+        verify(equipamentosRepository).reativarEquipamentos(1L);
+    }
+
+    @Test
+    public void testReativarEquipamento_Erro() {
+        // Given
+        String patrimonio = "12345";
+        Equipamentos equipamento = new Equipamentos();
+        equipamento.setId(1L);
+        when(equipamentosRepository.findByPatrimonio(patrimonio)).thenReturn(equipamento);
+        when(equipamentosRepository.reativarEquipamentos(1L)).thenReturn(0);
+
+        // When & Then
+        assertThrows(RuntimeException.class, () -> {
+            equipamentosService.reativarEquipamento(patrimonio);
+        });
+    }
+
+    @Test
+    public void testEncontrarEmprestimoEmAndamentoPorEquip_ComEmprestimo() {
+        // Given
+        Equipamentos equipamento = new Equipamentos();
+        equipamento.setId(1L);
+        Emprestimos emprestimo = new Emprestimos();
+        emprestimo.setEquipamento(equipamento);
+
+        List<Emprestimos> emprestimosList = new ArrayList<>();
+        emprestimosList.add(emprestimo);
+
+        when(emprestimosRepository.findByEmprestimosByEquipamentoAtivo(any(Equipamentos.class)))
+            .thenReturn(emprestimosList);
+
+        // When
+        List<Emprestimos> result = equipamentosService.encontrarEmprestimoEmAndamentoPorEquip(emprestimo);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(equipamento.getId(), result.get(0).getEquipamento().getId());
+    }
+
+    @Test
+    public void testEncontrarEmprestimoEmAndamentoPorEquip_SemEmprestimo() {
+        // Given
+        Equipamentos equipamento = new Equipamentos();
+        equipamento.setId(1L);
+        Emprestimos emprestimo = new Emprestimos();
+        emprestimo.setEquipamento(equipamento);
+
+        List<Emprestimos> emprestimosList = new ArrayList<>();
+
+        when(emprestimosRepository.findByEmprestimosByEquipamentoAtivo(any(Equipamentos.class)))
+            .thenReturn(emprestimosList);
+
+        // When
+        List<Emprestimos> result = equipamentosService.encontrarEmprestimoEmAndamentoPorEquip(emprestimo);
+
+        // Then
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testFindByDataAquisicao() {
+        // Given
+        LocalDate data1 = LocalDate.of(2020, 1, 1);
+        LocalDate data2 = LocalDate.of(2021, 1, 1);
+
+        List<Equipamentos> equipamentosList = new ArrayList<>();
+        equipamentosList.add(new Equipamentos());
+
+        when(equipamentosRepository.findByDataAquisicao(data1, data2)).thenReturn(equipamentosList);
+
+        // When
+        List<Equipamentos> result = equipamentosService.findByDataAquisicao(data1, data2);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+    
 }

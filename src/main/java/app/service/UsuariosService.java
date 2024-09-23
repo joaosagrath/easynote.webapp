@@ -34,7 +34,7 @@ public class UsuariosService {
 		if(optional.isPresent()) {
 			return optional.get();
 		}else
-			return null;
+		  throw new RuntimeException("Usuário não encontrado");
 		
 	}
 	
@@ -44,9 +44,13 @@ public class UsuariosService {
 		
 	}
 	
-	public String delete (long id) {
-		this.usuariosRepository.desativarUsuarios(id);
-		return "Usuário desativado com sucesso!";
+	public String delete(long id) {
+	    Optional<Usuarios> usuario = usuariosRepository.findById(id);
+	    if (!usuario.isPresent()) {
+	        throw new RuntimeException("Usuário não encontrado");
+	    }
+	    usuariosRepository.desativarUsuarios(id);
+	    return "Usuário desativado com sucesso!";
 	}
 	
 	
@@ -55,7 +59,7 @@ public class UsuariosService {
 	}
 	
 	public List<Usuarios> findByNome(String nome){
-		return this.findByNome(nome);
+		 return usuariosRepository.findByNomeContains(nome);
 	}
 	
 }

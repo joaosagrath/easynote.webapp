@@ -1,5 +1,6 @@
 package app.service;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -86,17 +87,29 @@ public class EmprestimosService {
 		return this.emprestimosRepository.findAll();
 		
 	}
-	
-	/*public String delete (long id) {
-		this.emprestimosRepository.deleteById(id);
-		return "Veículo deletado com sucesso!";
-	}*/
-	
+
 	public String encerrarEmprestimo(long id) {
 		LocalDateTime data = LocalDateTime.now();
 		String situacao = "Encerrado";
 		this.emprestimosRepository.encerrarEmprestimos(id, data, situacao);
 		return "Empréstimo encerrado com sucesso";
+	}
+	
+	public String tempodeUso(Emprestimos emprestimo) {
+	    LocalDateTime dataRetirada = emprestimo.getDataRetirada();
+	    LocalDateTime dataDevolucao = emprestimo.getDataDevolucao();
+
+	    if (dataDevolucao != null && dataRetirada != null) {
+	        Duration duracao = Duration.between(dataRetirada, dataDevolucao);
+	        
+	        long dias = duracao.toDays();
+	        long horas = duracao.toHours() % 24; // Resto para calcular horas além dos dias
+	        long minutos = duracao.toMinutes() % 60; // Resto para calcular minutos além das horas
+
+	        return String.format("%d dias, %d horas, %d minutos", dias, horas, minutos);
+	    } else {
+	        return "Datas inválidas";
+	    }
 	}
 	
 	public List<Emprestimos> findBySituacao(String situacao){
