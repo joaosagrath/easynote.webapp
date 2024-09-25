@@ -271,6 +271,52 @@ public class EmprestimoServiceTest {
         String resultadoEsperado = "2 dias, 5 horas, 30 minutos"; // Tempo esperado entre as duas datas
         assertEquals(resultadoEsperado, mensagem);
     }
-  
-	
+
+
+    @Test
+    @DisplayName("TESTE UNITÁRIO - TEMPO DE USO COM DEVOLUÇÃO NULA")
+    void tempodeUso_DeveRetornarMensagemDeErro_QuandoDataDevolucaoNula() {
+        // Cria um objeto Emprestimos com data de retirada válida e data de devolução nula
+        Emprestimos emprestimo = new Emprestimos();
+        LocalDateTime dataRetirada = LocalDateTime.of(2023, 9, 21, 10, 0);
+        emprestimo.setDataRetirada(dataRetirada);
+        emprestimo.setDataDevolucao(null);
+
+        // Executa o método
+        String resultado = emprestimoService.tempodeUso(emprestimo);
+
+        // Verifica se o resultado está correto
+        assertEquals("Datas inválidas", resultado);
+    }
+
+    @Test
+    @DisplayName("TESTE UNITÁRIO - TEMPO DE USO COM RETIRADA NULA")
+    void tempodeUso_DeveRetornarMensagemDeErro_QuandoDataRetiradaNula() {
+        // Cria um objeto Emprestimos com data de retirada nula e data de devolução válida
+        Emprestimos emprestimo = new Emprestimos();
+        LocalDateTime dataDevolucao = LocalDateTime.of(2023, 9, 23, 12, 30);
+        emprestimo.setDataRetirada(null);
+        emprestimo.setDataDevolucao(dataDevolucao);
+
+        // Executa o método
+        String resultado = emprestimoService.tempodeUso(emprestimo);
+
+        // Verifica se o resultado está correto
+        assertEquals("Datas inválidas", resultado);
+    }
+
+    @Test
+    @DisplayName("TESTE UNITÁRIO - TEMPO DE USO COM AMBAS DATAS NULAS")
+    void tempodeUso_DeveRetornarMensagemDeErro_QuandoAmbasDatasForemNulas() {
+        // Cria um objeto Emprestimos com ambas as datas nulas
+        Emprestimos emprestimo = new Emprestimos();
+        emprestimo.setDataRetirada(null);
+        emprestimo.setDataDevolucao(null);
+
+        // Executa o método
+        String resultado = emprestimoService.tempodeUso(emprestimo);
+
+        // Verifica se o resultado está correto
+        assertEquals("Datas inválidas", resultado);
+    }
 }
