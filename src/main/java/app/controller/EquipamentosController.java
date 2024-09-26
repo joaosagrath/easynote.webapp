@@ -32,7 +32,7 @@ public class EquipamentosController {
 	
 
 	@PostMapping("/save")
-	public ResponseEntity<String> save(@Valid@RequestBody Equipamentos equipamento){
+	public ResponseEntity<String> save(@Valid @RequestBody Equipamentos equipamento){
 		try {
 			String mensagem = this.equipamentosService.save(equipamento);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);

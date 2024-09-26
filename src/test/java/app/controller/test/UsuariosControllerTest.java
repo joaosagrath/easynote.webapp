@@ -1,8 +1,16 @@
 package app.controller.test;
 
-import app.controller.UsuariosController;
-import app.entity.Usuarios;
-import app.service.UsuariosService;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,22 +18,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
-import java.util.List;
+import app.controller.UsuariosController;
+import app.entity.Usuarios;
+import app.service.UsuariosService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-
+@SpringBootTest
 public class UsuariosControllerTest {
 
     @InjectMocks
     private UsuariosController usuariosController;
+    
+    @Autowired
+    private UsuariosController usuariosControl;
 
     @Mock
     private UsuariosService usuariosService;
@@ -52,6 +61,18 @@ public class UsuariosControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Usuário salvo com sucesso!", response.getBody());
         verify(usuariosService, times(1)).save(any(Usuarios.class));
+    }
+    
+    @Test
+    @DisplayName("Test - salvar usuario com erro de validação")
+    public void testSaveNotValid() {
+        //when(usuariosService.save(any(Usuarios.class))).thenReturn("Usuário salvo com sucesso!");
+    	Usuarios usuario = new Usuarios(2, "", "", "", "", false, null);
+        
+    	assertThrows(Exception.class, () -> {
+    		ResponseEntity<String> response = usuariosControl.save(usuario);
+    	});
+        
     }
 
     @Test
@@ -83,6 +104,18 @@ public class UsuariosControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Usuário atualizado com sucesso!", response.getBody());
         verify(usuariosService, times(1)).update(any(Usuarios.class), eq(1L));
+    }
+    
+    @Test
+    @DisplayName("Test - atualizar usuario com erro de validação")
+    public void testUpdateNotValid() {
+        //when(usuariosService.save(any(Usuarios.class))).thenReturn("Usuário salvo com sucesso!");
+    	Usuarios usuario = new Usuarios(2, "", "", "", "", false, null);
+        
+    	assertThrows(Exception.class, () -> {
+    		ResponseEntity<String> response = usuariosControl.update(usuario,2);
+    	});
+        
     }
 
     @Test
