@@ -30,7 +30,7 @@ public class UsuariosController {
 	
 
 	@PostMapping("/save")
-	public ResponseEntity<String> save(@Valid@RequestBody Usuarios usuario){
+	public ResponseEntity<String> save(@Valid @RequestBody Usuarios usuario){
 		try {
 			String mensagem = this.usuarioService.save(usuario);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
@@ -40,7 +40,7 @@ public class UsuariosController {
 	}
 	
 	@PutMapping("/update/{id}")
-	public ResponseEntity<String> update(@Valid@RequestBody Usuarios usuario, @PathVariable long id){
+	public ResponseEntity<String> update(@Valid @RequestBody Usuarios usuario, @PathVariable long id){
 		try {
 			String mensagem = this.usuarioService.update(usuario, id);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);

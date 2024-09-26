@@ -1,6 +1,7 @@
 package app.controller.test;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -25,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import app.controller.EquipamentosController;
 import app.entity.Equipamentos;
 import app.service.EquipamentosService;
 
@@ -37,6 +39,9 @@ public class EquipamentosControllerTest {
 
     @MockBean
     private EquipamentosService equipamentosService;
+    
+    @Autowired
+    private EquipamentosController equipamentoController;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -56,6 +61,21 @@ public class EquipamentosControllerTest {
                 .content(objectMapper.writeValueAsString(equipamento)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Equipamento salvo com sucesso!"));
+    }
+    
+    @Test
+    void testSaveEquipamentoNotValid() throws Exception {
+        Equipamentos equipamento = new Equipamentos();
+        equipamento.setPatrimonio("");
+        equipamento.setMarca("");
+        equipamento.setModelo("");
+        equipamento.setDataAquisicao(LocalDate.of(2022, 5, 20));
+
+        //when(equipamentosService.save(any(Equipamentos.class))).thenReturn("Equipamento salvo com sucesso!");
+        
+        assertThrows(Exception.class, () -> {
+        	equipamentoController.save(equipamento);
+        });
     }
 	
 	@Test
@@ -92,6 +112,22 @@ public class EquipamentosControllerTest {
                 .content(objectMapper.writeValueAsString(equipamento)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Equipamento salvo com sucesso!"));
+    }
+    
+    @Test
+    void testUpdateEquipamentoNotValid() throws Exception {
+        Equipamentos equipamento = new Equipamentos();
+        equipamento.setId(1);
+        equipamento.setPatrimonio("");
+        equipamento.setMarca("");
+        equipamento.setModelo("");
+        equipamento.setDataAquisicao(LocalDate.of(2022, 5, 20));
+
+        //when(equipamentosService.save(any(Equipamentos.class))).thenReturn("Equipamento salvo com sucesso!");
+        
+        assertThrows(Exception.class, () -> {
+        	equipamentoController.update(equipamento, 1);
+        });
     }
 	
 	@Test

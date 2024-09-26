@@ -31,7 +31,7 @@ public class Equipamentos {
 	private long id;
 	
 	@Column(unique=true)
-	@NotNull(message = "Por favor, informe o número do patrimônio do equipamento")
+	@NotBlank(message = "Por favor, informe o número do patrimônio do equipamento")
 	private String patrimonio;
 	
 	@NotBlank(message= "Por favor, informe a marca do equipamento")

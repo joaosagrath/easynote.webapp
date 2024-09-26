@@ -1,6 +1,7 @@
 package app.controller.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collections;
 import java.util.Date;
@@ -44,6 +45,7 @@ public class EmprestimoControllerTest {
 
 	Emprestimos emprestimo;
 	Emprestimos emprestimoAtualizado;
+	Emprestimos emprestimoErrado;
 
 	@BeforeEach
 	void setup() {
@@ -68,6 +70,8 @@ public class EmprestimoControllerTest {
 			emprestimo = new Emprestimos(1, dataRetirada, null, "Em Andamento", "", aluno, equipamento, usuario);
 			emprestimoAtualizado = new Emprestimos(1, dataRetirada, dataDevolucao, "Encerrado", "", aluno, equipamento,
 					usuario);
+			emprestimoErrado = new Emprestimos(1, dataRetirada, dataDevolucao, "Encerrado", "", null, null,
+					null);
 
 			Mockito.when(emprestimoRepository.save(emprestimo)).thenReturn(emprestimo);
 			Mockito.when(emprestimoRepository.findAll()).thenReturn(List.of(emprestimo));
@@ -76,7 +80,7 @@ public class EmprestimoControllerTest {
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Test
 	@DisplayName("Salvar empréstimo de forma correta")
 	void salvarEmprestimoCorreto() {
