@@ -23,6 +23,7 @@ public class EquipamentosService {
 
 	public String save(Equipamentos equipamentos) {
 		equipamentos.setAtivo(true);
+		equipamentos.setSituacao("Disponível");
 		Equipamentos equip = this.equipamentosRepository.save(equipamentos);
 		if(equip != null) {
 		   return "Equipamento salvo com sucesso!";

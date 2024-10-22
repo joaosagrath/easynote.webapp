@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import jakarta.validation.Valid;
 @Validated
 @RestController
 @RequestMapping("/api/usuarios")
+@CrossOrigin("*")
 public class UsuariosController {
 
 	@Autowired
@@ -73,8 +75,8 @@ public class UsuariosController {
 	@GetMapping("/findByNome")
 	public ResponseEntity<List<Usuarios>> findByNome(@RequestParam String nome){
 		try {
-			List<Usuarios> aluno = this.usuarioService.findByNome(nome);
-			return new ResponseEntity<>(aluno, HttpStatus.OK);
+			List<Usuarios> user = this.usuarioService.findByNome(nome);
+			return new ResponseEntity<>(user, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
 		}
@@ -83,8 +85,18 @@ public class UsuariosController {
 	@GetMapping("/findByCpf")
 	public ResponseEntity<Usuarios> findByCpf(@RequestParam String cpf){
 		try {
-			Usuarios aluno = this.usuarioService.findByCpf(cpf);
-			return new ResponseEntity<>(aluno, HttpStatus.OK);
+			Usuarios user = this.usuarioService.findByCpf(cpf);
+			return new ResponseEntity<>(user, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+		}
+	}
+	
+	@GetMapping("/findByLogin")
+	public ResponseEntity<Usuarios> findByLogin(@RequestParam String login){
+		try {
+			Usuarios user = this.usuarioService.findByLogin(login);
+			return new ResponseEntity<>(user, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
 		}

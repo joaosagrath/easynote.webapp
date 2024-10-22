@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import jakarta.validation.Valid;
 @Validated
 @RestController
 @RequestMapping("/api/equipamentos")
+@CrossOrigin("*")
 public class EquipamentosController {
 
 	@Autowired
@@ -47,7 +49,7 @@ public class EquipamentosController {
 			String mensagem = this.equipamentosService.update(equipamento, id);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>("Deu erro!"+e.getMessage(), HttpStatus.BAD_REQUEST );
+			return new ResponseEntity<>("Deu erro! "+e.getMessage(), HttpStatus.BAD_REQUEST );
 		}
 	}
 
