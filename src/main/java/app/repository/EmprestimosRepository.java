@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -35,8 +36,11 @@ public interface EmprestimosRepository extends JpaRepository<Emprestimos, Long>{
 	@Query("FROM Emprestimos e WHERE e.aluno = :aluno AND e.situacao = 'Em Andamento'")
 	public List<Emprestimos> findByEmprestimosByAlunoAtivo(Alunos aluno);
 	
-	@Query("FROM Emprestimos e WHERE e.equipamento = :equipamento AND e.situacao = 'Em Andamento'")
-	public List<Emprestimos> findByEmprestimosByEquipamentoAtivo(Equipamentos equipamento);
+	/*@Query("FROM Emprestimos e WHERE e.equipamento = :equipamento AND e.situacao = 'Em Andamento'")
+	public List<Emprestimos> findByEmprestimosByEquipamentoAtivo(Equipamentos equipamento);*/
+	
+	@Query("FROM Emprestimos e WHERE e.equipamento.patrimonio = :patrimonio AND e.situacao = 'Em Andamento'")
+	public Optional<Emprestimos> findByEmprestimosByEquipamentoAtivo(String patrimonio);
 	
 	@Modifying
 	@Transactional

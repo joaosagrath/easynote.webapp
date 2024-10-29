@@ -1,9 +1,7 @@
 package app.service;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,19 +23,16 @@ public class EmprestimosService {
 	public String save (Emprestimos emprestimos) {
 		
 		List<Emprestimos> lista = this.encontrarEmprestimoEmAndamentoPorAluno(emprestimos);
+		Optional<Emprestimos> equip = this.encontrarEmprestimoEmAndamentoPorEquip(emprestimos.getEquipamento().getPatrimonio());
 		
 		if(lista != null && !lista.isEmpty()) {
 			throw new RuntimeException("Aluno já possui empréstimo em andamento!");
-		}
-		
-		List<Emprestimos> listaEquip = this.encontrarEmprestimoEmAndamentoPorEquip(emprestimos);
-		
-		if(listaEquip != null && !listaEquip.isEmpty()) {
+		}else if(equip.isPresent()) {
 			throw new RuntimeException("Equipamento já possui empréstimo em andamento!");
 		}
 		
 		emprestimos.setDataRetirada(LocalDateTime.now());
-		emprestimos.setSituacao("Em andamento");
+		emprestimos.setSituacao("Em Andamento");
 		Emprestimos emp = this.emprestimosRepository.save(emprestimos);
 		 
 		if(emp != null) {
@@ -48,18 +43,19 @@ public class EmprestimosService {
 	
 	}
 	
-	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorAluno(Emprestimos emp){
-		Alunos aluno = new Alunos();
-		aluno.setId(emp.getAluno().getId());
+	public List<Emprestimos> encontrarEmprestimoEmAndamentoPorAluno(Emprestimos emp){
+		Alunos aluno = emp.getAluno();
+		//aluno.setId(emp.getAluno().getId());
 		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByAlunoAtivo(aluno);
 		return lista;
 	}
 	
-	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorEquip(Emprestimos emp){
+	public Optional<Emprestimos> encontrarEmprestimoEmAndamentoPorEquip(String patrimonio){
 		Equipamentos equipamento = new Equipamentos();
-		equipamento.setId(emp.getEquipamento().getId());
-		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByEquipamentoAtivo(equipamento);
-		return lista;
+		equipamento.setPatrimonio(patrimonio);
+		//equipamento.setId(emp.getEquipamento().getId());
+		Optional<Emprestimos> emprestimo = this.emprestimosRepository.findByEmprestimosByEquipamentoAtivo(equipamento.getPatrimonio());
+		return emprestimo;
 	}
 	
 	public String update (Emprestimos emprestimos, long id) {

@@ -1,7 +1,9 @@
 package app.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -39,6 +41,7 @@ public class EmprestimosController {
 			String mensagem = this.emprestimosService.save(emprestimo);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST );
 		}
 	}
@@ -103,6 +106,19 @@ public class EmprestimosController {
 		}
 	}
 	
+	@GetMapping("/findByEquipamentoPorEmprestimoAtivo")
+	public ResponseEntity<Emprestimos> findByEquipamentoPorEmprestimoAtivo(@RequestParam String patrimonio){
+		try {
+			Optional<Emprestimos> lista = this.emprestimosService.encontrarEmprestimoEmAndamentoPorEquip(patrimonio);
+			if(lista.isPresent())
+				return new ResponseEntity<>(lista.get(), HttpStatus.OK);
+			else
+				return new ResponseEntity<>(null, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 	@GetMapping("/findByDataRetirada")
 	public ResponseEntity<List<Emprestimos>> findByDataRetirada(
 	        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data1,
@@ -127,17 +143,7 @@ public class EmprestimosController {
 		}
 	}
 	
-	/*@DeleteMapping("/delete/{id}")
-	public ResponseEntity<String> delete(@PathVariable long id){
-		try {
-			String mensagem = this.emprestimosService.delete(id);
-			return new ResponseEntity<>(mensagem, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
-		}
-	}*/
-	
-	@DeleteMapping("/encerrar/{id}")
+	@PutMapping("/encerrar/{id}")
 	public ResponseEntity<String> encerrar(@PathVariable long id){
 		try {
 			String mensagem = this.emprestimosService.encerrarEmprestimo(id);

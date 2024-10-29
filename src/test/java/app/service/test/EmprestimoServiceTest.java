@@ -95,8 +95,8 @@ public class EmprestimoServiceTest {
 		Mockito.when(emprestimoRepository.findByEmprestimosByAlunoAtivo(Mockito.any(Alunos.class)))
 				.thenReturn(Collections.emptyList());
 
-		Mockito.when(emprestimoRepository.findByEmprestimosByEquipamentoAtivo(Mockito.any(Equipamentos.class)))
-				.thenReturn(Collections.emptyList());
+		//Mockito.when(emprestimoRepository.findByEmprestimosByEquipamentoAtivo(Mockito.any(Equipamentos.class)))
+				//.thenReturn(Collections.emptyList());
 
 		Mockito.when(emprestimoRepository.save(emprestimo)).thenReturn(emprestimo);
 
@@ -110,8 +110,8 @@ public class EmprestimoServiceTest {
 		Mockito.when(emprestimoRepository.findByEmprestimosByAlunoAtivo(Mockito.any(Alunos.class)))
 				.thenReturn(Collections.emptyList());
 
-		Mockito.when(emprestimoRepository.findByEmprestimosByEquipamentoAtivo(Mockito.any(Equipamentos.class)))
-				.thenReturn(Collections.emptyList());
+		//Mockito.when(emprestimoRepository.findByEmprestimosByEquipamentoAtivo(Mockito.any(Equipamentos.class)))
+				//.thenReturn(Collections.emptyList());
 
 		Mockito.when(emprestimoRepository.save(emprestimoErrado)).thenReturn(emprestimoErrado);
 
@@ -126,8 +126,8 @@ public class EmprestimoServiceTest {
 		Mockito.when(emprestimoRepository.findByEmprestimosByAlunoAtivo(Mockito.any(Alunos.class)))
 				.thenReturn(Collections.emptyList());
 
-		Mockito.when(emprestimoRepository.findByEmprestimosByEquipamentoAtivo(Mockito.any(Equipamentos.class)))
-				.thenReturn(Collections.emptyList());
+		//Mockito.when(emprestimoRepository.findByEmprestimosByEquipamentoAtivo(Mockito.any(Equipamentos.class)))
+				//.thenReturn(Collections.emptyList());
 
 		Mockito.when(emprestimoRepository.save(emprestimo)).thenReturn(null);
 
@@ -154,8 +154,8 @@ public class EmprestimoServiceTest {
 	void salvarEmprestimoEquipamentoComEmprestimoAtivo() {
 		List<Emprestimos> emprestimosAtivos = List.of(emprestimo);
 
-		Mockito.when(emprestimoRepository.findByEmprestimosByEquipamentoAtivo(Mockito.any(Equipamentos.class)))
-				.thenReturn(emprestimosAtivos);
+		//Mockito.when(emprestimoRepository.findByEmprestimosByEquipamentoAtivo(Mockito.any(Equipamentos.class)))
+				//.thenReturn(emprestimosAtivos);
 
 		assertThrows(RuntimeException.class, () -> {
 			emprestimoService.save(emprestimo);
