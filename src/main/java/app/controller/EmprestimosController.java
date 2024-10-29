@@ -1,7 +1,6 @@
 package app.controller;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,10 +74,49 @@ public class EmprestimosController {
 		}
 	}
 	
+	@GetMapping("/findByFilter")
+	public ResponseEntity<List<Emprestimos>> findByFilter(
+			//@RequestParam(value="dataRetirada", required=false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataRetirada, 
+	       // @RequestParam(value="dataDevolucao", required=false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataDevolucao,
+			@RequestParam(value="dataRetirada",required = false) LocalDateTime dataRetirada,
+			@RequestParam(value="dataDevolucao",required = false) LocalDateTime dataDevolucao,
+			@RequestParam("situacao") String situacao, 
+			@RequestParam("ra") String ra, @RequestParam("usuario") String usuario, 
+			@RequestParam("patrimonio") String patrimonio){
+		try {
+			
+			System.out.println(dataRetirada);
+			System.out.println(dataDevolucao);
+			if(dataDevolucao != null) {
+				dataDevolucao = dataDevolucao.withHour(23);
+				dataDevolucao = dataDevolucao.withMinute(59);
+				dataDevolucao = dataDevolucao.withSecond(59);
+			}
+			
+			List<Emprestimos> lista = this.emprestimosService.findByFilter(dataRetirada, dataDevolucao, situacao, ra,
+		    		usuario, patrimonio);
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+		}
+	}
+	
 	@GetMapping("/findBySituacao")
 	public ResponseEntity<List<Emprestimos>> findBySituacao(@RequestParam String situacao){
 		try {
 			List<Emprestimos> lista = this.emprestimosService.findBySituacao(situacao);
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/findByUsuario")
+	public ResponseEntity<List<Emprestimos>> findByUsuario(@RequestParam String usuarioNome){
+		try {
+			List<Emprestimos> lista = this.emprestimosService.findByUsuario(usuarioNome);
 			return new ResponseEntity<>(lista, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

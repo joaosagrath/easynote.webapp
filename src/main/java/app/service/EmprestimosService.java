@@ -108,8 +108,18 @@ public class EmprestimosService {
 	    }
 	}
 	
+	public List<Emprestimos> findByFilter(LocalDateTime dataRetirada, LocalDateTime dataDevolucao,
+			String situacao, String ra, String usuario, String patrimonio) {
+	    return this.emprestimosRepository.findByFilter(dataRetirada, dataDevolucao, situacao, ra,
+	    		usuario, patrimonio);
+	}
+	
 	public List<Emprestimos> findBySituacao(String situacao){
 		return this.emprestimosRepository.findBySituacao(situacao);
+	}
+	
+	public List<Emprestimos> findByUsuario(String usuarioNome){
+		return this.emprestimosRepository.findByUsuarioNomeContains(usuarioNome);
 	}
 	
 	public List<Emprestimos> findByAluno(String ra){
