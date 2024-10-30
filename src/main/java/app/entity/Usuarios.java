@@ -39,13 +39,13 @@ public class Usuarios {
 	private String nome;
 	
 	@Column(unique=true)
-	@NotBlank(message="Por favor, informe o CPF do aluno")
+	@NotBlank(message="Por favor, informe o CPF do usuario")
 	@CPF(message="CPF inválido")
 	private String cpf;
 	
-	@NotBlank(message="Por favor, informe o LOGIN do aluno")
+	@NotBlank(message="Por favor, informe o LOGIN do usuario")
 	private String login;
-	@NotBlank(message="Por favor, informe o SENHA do aluno")
+	@NotBlank(message="Por favor, informe o SENHA do usuario")
 	private String senha;
 	
 	

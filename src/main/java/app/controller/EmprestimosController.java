@@ -2,13 +2,14 @@ package app.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import jakarta.validation.Valid;
 @Validated
 @RestController
 @RequestMapping("/api/emprestimos")
+@CrossOrigin("*")
 public class EmprestimosController {
 
 	@Autowired
@@ -37,6 +39,7 @@ public class EmprestimosController {
 			String mensagem = this.emprestimosService.save(emprestimo);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST );
 		}
 	}
@@ -71,10 +74,49 @@ public class EmprestimosController {
 		}
 	}
 	
+	@GetMapping("/findByFilter")
+	public ResponseEntity<List<Emprestimos>> findByFilter(
+			//@RequestParam(value="dataRetirada", required=false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataRetirada, 
+	       // @RequestParam(value="dataDevolucao", required=false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataDevolucao,
+			@RequestParam(value="dataRetirada",required = false) LocalDateTime dataRetirada,
+			@RequestParam(value="dataDevolucao",required = false) LocalDateTime dataDevolucao,
+			@RequestParam("situacao") String situacao, 
+			@RequestParam("ra") String ra, @RequestParam("usuario") String usuario, 
+			@RequestParam("patrimonio") String patrimonio){
+		try {
+			
+			System.out.println(dataRetirada);
+			System.out.println(dataDevolucao);
+			if(dataDevolucao != null) {
+				dataDevolucao = dataDevolucao.withHour(23);
+				dataDevolucao = dataDevolucao.withMinute(59);
+				dataDevolucao = dataDevolucao.withSecond(59);
+			}
+			
+			List<Emprestimos> lista = this.emprestimosService.findByFilter(dataRetirada, dataDevolucao, situacao, ra,
+		    		usuario, patrimonio);
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+		}
+	}
+	
 	@GetMapping("/findBySituacao")
 	public ResponseEntity<List<Emprestimos>> findBySituacao(@RequestParam String situacao){
 		try {
 			List<Emprestimos> lista = this.emprestimosService.findBySituacao(situacao);
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/findByUsuario")
+	public ResponseEntity<List<Emprestimos>> findByUsuario(@RequestParam String usuarioNome){
+		try {
+			List<Emprestimos> lista = this.emprestimosService.findByUsuario(usuarioNome);
 			return new ResponseEntity<>(lista, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -96,6 +138,19 @@ public class EmprestimosController {
 		try {
 			List<Emprestimos> lista = this.emprestimosService.findByEquipamento(patrimonio);
 			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/findByEquipamentoPorEmprestimoAtivo")
+	public ResponseEntity<Emprestimos> findByEquipamentoPorEmprestimoAtivo(@RequestParam String patrimonio){
+		try {
+			Optional<Emprestimos> lista = this.emprestimosService.encontrarEmprestimoEmAndamentoPorEquip(patrimonio);
+			if(lista.isPresent())
+				return new ResponseEntity<>(lista.get(), HttpStatus.OK);
+			else
+				return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
@@ -125,17 +180,7 @@ public class EmprestimosController {
 		}
 	}
 	
-	/*@DeleteMapping("/delete/{id}")
-	public ResponseEntity<String> delete(@PathVariable long id){
-		try {
-			String mensagem = this.emprestimosService.delete(id);
-			return new ResponseEntity<>(mensagem, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
-		}
-	}*/
-	
-	@DeleteMapping("/encerrar/{id}")
+	@PutMapping("/encerrar/{id}")
 	public ResponseEntity<String> encerrar(@PathVariable long id){
 		try {
 			String mensagem = this.emprestimosService.encerrarEmprestimo(id);
