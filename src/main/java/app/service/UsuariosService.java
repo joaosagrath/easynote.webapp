@@ -58,10 +58,6 @@ public class UsuariosService {
 		return this.usuariosRepository.findByCpf(cpf);
 	}
 	
-	public Usuarios findByLogin(String login) {
-		return this.usuariosRepository.findByLogin(login);
-	}
-	
 	public List<Usuarios> findByNome(String nome){
 		 return usuariosRepository.findByNomeContains(nome);
 	}

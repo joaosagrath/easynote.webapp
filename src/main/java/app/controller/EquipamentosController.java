@@ -8,7 +8,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +25,6 @@ import jakarta.validation.Valid;
 @Validated
 @RestController
 @RequestMapping("/api/equipamentos")
-@CrossOrigin("*")
 public class EquipamentosController {
 
 	@Autowired
@@ -49,7 +47,7 @@ public class EquipamentosController {
 			String mensagem = this.equipamentosService.update(equipamento, id);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>("Deu erro! "+e.getMessage(), HttpStatus.BAD_REQUEST );
+			return new ResponseEntity<>("Deu erro!"+e.getMessage(), HttpStatus.BAD_REQUEST );
 		}
 	}
 
@@ -92,30 +90,6 @@ public class EquipamentosController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
 		}
 	}
-	
-	@GetMapping("/findByFilter")
-	public ResponseEntity<List<Equipamentos>> findByFilter(@RequestParam("situacao") String situacao, @RequestParam("patrimonio") String patrimonio,
-			@RequestParam("modelo") String modelo, @RequestParam("marca") String marca){
-		try {
-			List<Equipamentos> lista = this.equipamentosService.findByFilter(situacao, patrimonio, modelo, marca);
-			return new ResponseEntity<>(lista, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
-		}
-	}
-	
-	/*@GetMapping("/equipamentosFiltrados")
-	public ResponseEntity<List<Equipamentos>> equipamentosFiltrados(@RequestParam(required = false) String situacao, 
-			@RequestParam(required = false) String modelo, @RequestParam(required = false) String marca, 
-			@RequestParam (required = false) String patrimonio){
-		System.out.println("Modelo: " + modelo + ", Marca: " + marca + ", Situação: " + situacao + ", Patrimônio: " + patrimonio);
-		try {
-			List<Equipamentos> lista = this.equipamentosService.equipamentosFiltrados(modelo, marca, patrimonio, situacao);
-			return new ResponseEntity<>(lista, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
-		}
-	}*/
 	
 	@GetMapping("/findByMarca")
 	public ResponseEntity<List<Equipamentos>> findByMarca(@RequestParam String marca){

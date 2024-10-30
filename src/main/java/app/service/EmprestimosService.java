@@ -1,7 +1,9 @@
 package app.service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,20 +25,19 @@ public class EmprestimosService {
 	public String save (Emprestimos emprestimos) {
 		
 		List<Emprestimos> lista = this.encontrarEmprestimoEmAndamentoPorAluno(emprestimos);
-		Optional<Emprestimos> equip = this.encontrarEmprestimoEmAndamentoPorEquip(emprestimos.getEquipamento().getPatrimonio());
 		
 		if(lista != null && !lista.isEmpty()) {
 			throw new RuntimeException("Aluno já possui empréstimo em andamento!");
-		}else if(equip.isPresent()) {
+		}
+		
+		List<Emprestimos> listaEquip = this.encontrarEmprestimoEmAndamentoPorEquip(emprestimos);
+		
+		if(listaEquip != null && !listaEquip.isEmpty()) {
 			throw new RuntimeException("Equipamento já possui empréstimo em andamento!");
-		}else if(!emprestimos.getAluno().isAtivo()) {
-			throw new RuntimeException("Aluno não possui RA ativo!");
-		}else if(!emprestimos.getEquipamento().isAtivo() || !emprestimos.getEquipamento().getSituacao().equals("Disponível")) {
-			throw new RuntimeException("Equipamento não está apto para empréstimo!");
 		}
 		
 		emprestimos.setDataRetirada(LocalDateTime.now());
-		emprestimos.setSituacao("Em Andamento");
+		emprestimos.setSituacao("Em andamento");
 		Emprestimos emp = this.emprestimosRepository.save(emprestimos);
 		 
 		if(emp != null) {
@@ -47,19 +48,18 @@ public class EmprestimosService {
 	
 	}
 	
-	public List<Emprestimos> encontrarEmprestimoEmAndamentoPorAluno(Emprestimos emp){
-		Alunos aluno = emp.getAluno();
-		//aluno.setId(emp.getAluno().getId());
+	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorAluno(Emprestimos emp){
+		Alunos aluno = new Alunos();
+		aluno.setId(emp.getAluno().getId());
 		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByAlunoAtivo(aluno);
 		return lista;
 	}
 	
-	public Optional<Emprestimos> encontrarEmprestimoEmAndamentoPorEquip(String patrimonio){
+	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorEquip(Emprestimos emp){
 		Equipamentos equipamento = new Equipamentos();
-		equipamento.setPatrimonio(patrimonio);
-		//equipamento.setId(emp.getEquipamento().getId());
-		Optional<Emprestimos> emprestimo = this.emprestimosRepository.findByEmprestimosByEquipamentoAtivo(equipamento.getPatrimonio());
-		return emprestimo;
+		equipamento.setId(emp.getEquipamento().getId());
+		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByEquipamentoAtivo(equipamento);
+		return lista;
 	}
 	
 	public String update (Emprestimos emprestimos, long id) {
@@ -112,18 +112,8 @@ public class EmprestimosService {
 	    }
 	}
 	
-	public List<Emprestimos> findByFilter(LocalDateTime dataRetirada, LocalDateTime dataDevolucao,
-			String situacao, String ra, String usuario, String patrimonio) {
-	    return this.emprestimosRepository.findByFilter(dataRetirada, dataDevolucao, situacao, ra,
-	    		usuario, patrimonio);
-	}
-	
 	public List<Emprestimos> findBySituacao(String situacao){
 		return this.emprestimosRepository.findBySituacao(situacao);
-	}
-	
-	public List<Emprestimos> findByUsuario(String usuarioNome){
-		return this.emprestimosRepository.findByUsuarioNomeContains(usuarioNome);
 	}
 	
 	public List<Emprestimos> findByAluno(String ra){

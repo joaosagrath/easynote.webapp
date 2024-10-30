@@ -23,7 +23,6 @@ public class EquipamentosService {
 
 	public String save(Equipamentos equipamentos) {
 		equipamentos.setAtivo(true);
-		equipamentos.setSituacao("Disponível");
 		Equipamentos equip = this.equipamentosRepository.save(equipamentos);
 		if(equip != null) {
 		   return "Equipamento salvo com sucesso!";
@@ -67,13 +66,13 @@ public class EquipamentosService {
 		Emprestimos emp = new Emprestimos();
 		emp.setEquipamento(equipamento);
 
-		Emprestimos lista = this.encontrarEmprestimoEmAndamentoPorEquip(emp);
+		List<Emprestimos> lista = this.encontrarEmprestimoEmAndamentoPorEquip(emp);
 
-		if (lista != null) {
+		if (lista != null && !lista.isEmpty()) {
 			throw new RuntimeException("Equipamento possui empréstimo em andamento!");
 		}else {
 			
-			int equipDesativado = this.equipamentosRepository.desativarEquipamentos(id, "Desativado");
+			int equipDesativado = this.equipamentosRepository.desativarEquipamentos(id);
 		    if (equipDesativado > 0) {
 		        return "Equipamento desativado com sucesso!";
 		    } else {
@@ -84,31 +83,22 @@ public class EquipamentosService {
 		
 	}
 
-	public Emprestimos encontrarEmprestimoEmAndamentoPorEquip(Emprestimos emp){
+	public List<Emprestimos> encontrarEmprestimoEmAndamentoPorEquip(Emprestimos emp){
 		Equipamentos equipamento = new Equipamentos();
-		equipamento.setPatrimonio(emp.getEquipamento().getPatrimonio());
-		Optional<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByEquipamentoAtivo(equipamento.getPatrimonio());
-		if(lista.isPresent())		
-			return lista.get();
-		else
-			return null;
+		equipamento.setId(emp.getEquipamento().getId());
+		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByEquipamentoAtivo(equipamento);
+		return lista;
 	}
-	
-	
 	
 	public String reativarEquipamento(String patrimonio) {
 	    Equipamentos equipamento = this.equipamentosRepository.findByPatrimonio(patrimonio);
 	    long id = equipamento.getId();
-	    int equipamentoReativado = this.equipamentosRepository.reativarEquipamentos(id, "Disponível");
+	    int equipamentoReativado = this.equipamentosRepository.reativarEquipamentos(id);
 	    if (equipamentoReativado > 0) {
 	        return "Equipamento reativado com sucesso!";
 	    } else {
 	        throw new RuntimeException("Erro ao reativar equipamento!");
 	    }
-	}
-	
-	public List<Equipamentos> findByFilter(String situacao, String patrimonio, String modelo, String marca) {
-	    return this.equipamentosRepository.findByFilter(situacao, patrimonio, modelo, marca);
 	}
 	
 
@@ -117,11 +107,8 @@ public class EquipamentosService {
 	}
 
 	public List<Equipamentos> findByMarca(String marca) {
-		return this.equipamentosRepository.findByMarcaContains(marca);
+		return this.equipamentosRepository.findByMarca(marca);
 	}
-	/*public List<Equipamentos> equipamentosFiltrados(String modelo, String marca, String patrimonio, String situacao) {
-		return this.equipamentosRepository.equipamentosFiltrados(modelo, marca, patrimonio, situacao);
-	}*/
 
 	public List<Equipamentos> findByModelo(String modelo) {
 		return this.equipamentosRepository.findByModeloContains(modelo);

@@ -15,8 +15,6 @@ public interface UsuariosRepository extends JpaRepository<Usuarios, Long>{
 	
 	public Usuarios findByCpf(String cpf);
 	
-	public Usuarios findByLogin(String login);
-	
 	@Modifying
 	@Transactional
 	@Query("UPDATE Usuarios u SET u.ativo = false WHERE u.id = :id")

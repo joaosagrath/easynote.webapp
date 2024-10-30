@@ -92,7 +92,7 @@ public class EquipamentosControllerTest {
 		mockMvc.perform(post("/api/equipamentos/save")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(equipamento)))
-				.andExpect(status().isBadRequest())
+		.andExpect(status().isBadRequest())
 				.andExpect(content().string("Deu erro!"));
 	}
 

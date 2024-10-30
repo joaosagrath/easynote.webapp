@@ -87,8 +87,8 @@ public class EmprestimoControllerTest {
 		Mockito.when(emprestimoRepository.findByEmprestimosByAlunoAtivo(Mockito.any(Alunos.class)))
 				.thenReturn(Collections.emptyList());
 
-		//Mockito.when(emprestimoRepository.findByEmprestimosByEquipamentoAtivo(Mockito.any(Equipamentos.class)))
-				//.thenReturn(Collections.emptyList());
+		Mockito.when(emprestimoRepository.findByEmprestimosByEquipamentoAtivo(Mockito.any(Equipamentos.class)))
+				.thenReturn(Collections.emptyList());
 		ResponseEntity<String> response = emprestimoController.save(emprestimo);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
@@ -100,8 +100,8 @@ public class EmprestimoControllerTest {
 		Mockito.when(emprestimoRepository.findByEmprestimosByAlunoAtivo(Mockito.any(Alunos.class)))
 				.thenReturn(Collections.emptyList());
 
-		//Mockito.when(emprestimoRepository.findByEmprestimosByEquipamentoAtivo(Mockito.any(Equipamentos.class)))
-				//.thenReturn(Collections.emptyList());
+		Mockito.when(emprestimoRepository.findByEmprestimosByEquipamentoAtivo(Mockito.any(Equipamentos.class)))
+				.thenReturn(Collections.emptyList());
 		
 		// Simulate exception being thrown from the service layer
 		Mockito.when(emprestimoService.save(Mockito.any(Emprestimos.class)))

@@ -43,7 +43,7 @@ public class Emprestimos {
 	private Alunos aluno;
 	
 	@ManyToOne(cascade = CascadeType.MERGE)
-	@JsonIgnoreProperties("emprestimo")
+	@JsonIgnoreProperties("emprestimos")
 	private Equipamentos equipamento;
 	
 	@ManyToOne(cascade = CascadeType.MERGE)
