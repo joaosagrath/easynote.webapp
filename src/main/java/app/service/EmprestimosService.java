@@ -29,6 +29,10 @@ public class EmprestimosService {
 			throw new RuntimeException("Aluno já possui empréstimo em andamento!");
 		}else if(equip.isPresent()) {
 			throw new RuntimeException("Equipamento já possui empréstimo em andamento!");
+		}else if(!emprestimos.getAluno().isAtivo()) {
+			throw new RuntimeException("Aluno não possui RA ativo!");
+		}else if(!emprestimos.getEquipamento().isAtivo() || !emprestimos.getEquipamento().getSituacao().equals("Disponível")) {
+			throw new RuntimeException("Equipamento não está apto para empréstimo!");
 		}
 		
 		emprestimos.setDataRetirada(LocalDateTime.now());

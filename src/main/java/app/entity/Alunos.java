@@ -57,6 +57,7 @@ public class Alunos {
 	private String usuario;
 	private String senha;
 	
+	
 	@NotBlank(message="Por favor, informe o RA do aluno")
 	private String ra;
 	
