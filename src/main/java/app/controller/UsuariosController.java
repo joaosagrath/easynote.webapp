@@ -102,7 +102,7 @@ public class UsuariosController {
 		}
 	}
 	
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/delete/{id}") 
 	public ResponseEntity<String> delete(@PathVariable long id){
 		try {
 			String mensagem = this.usuarioService.delete(id);
