@@ -27,8 +27,8 @@ public interface EquipamentosRepository extends JpaRepository<Equipamentos, Long
 	public List<Equipamentos> findByAtivoFalse();
 	
 	@Query("FROM Equipamentos e WHERE " +
-		       "( :modelo = '' or e.modelo = :modelo ) AND " +
-		       "( :marca = '' or e.marca = :marca ) AND " +
+		       "( :modelo = '' or e.modelo LIKE CONCAT('%', :modelo, '%') ) AND " +
+		       "( :marca = '' or e.marca LIKE CONCAT('%', :marca, '%') ) AND " +
 		       "( :situacao = '' or e.situacao = :situacao ) AND " +
 		       "( :patrimonio = '' or e.patrimonio = :patrimonio )")
 		public List<Equipamentos> findByFilter(
@@ -36,6 +36,8 @@ public interface EquipamentosRepository extends JpaRepository<Equipamentos, Long
 		       @Param("patrimonio") String patrimonio,
 		       @Param("modelo") String modelo,
 		       @Param("marca") String marca);
+	
+	
 	
 	@Query("FROM Equipamentos e WHERE e.dataAquisicao BETWEEN :data1 AND :data2")
 	public List<Equipamentos> findByDataAquisicao(LocalDate data1, LocalDate data2);
