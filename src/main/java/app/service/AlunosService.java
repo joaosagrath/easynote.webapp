@@ -13,12 +13,21 @@ import app.entity.Alunos;
 import app.entity.Emprestimos;
 import app.repository.AlunosRepository;
 import app.repository.EmprestimosRepository;
+import app.uniamerica.entity.AlunoUniamerica;
+import app.uniamerica.service.AlunoUniamericaService;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
 public class AlunosService {
 
 	@Autowired
 	private AlunosRepository alunosRepository;
+	
+	@Autowired
+	private AlunoUniamericaService alunoUniamericaService;
 
 	@Autowired
 	private EmprestimosRepository emprestimosRepository;
@@ -103,13 +112,59 @@ public class AlunosService {
 		Alunos aluno = new Alunos();
 		aluno.setId(emp.getAluno().getId());
 		List<Emprestimos> lista = this.emprestimosRepository.findByEmprestimosByAlunoAtivo(aluno);
+		
+		
+		
 		return lista;
 	}
 
-	public Alunos findByRa(String ra) {
-		return this.alunosRepository.findByRa(ra);
-	}
+	/*
+	 public Alunos findByRa(String ra) {
 
+        return this.alunosRepository.findByRa(ra);
+	}
+	 */	
+	
+	public Alunos findByRa(String ra) {
+	    AlunoUniamerica alunoUniamerica = this.alunoUniamericaService.findByRA(ra);
+	    Alunos alunoLocal = alunosRepository.findByRa(ra);
+	    
+	    if (alunoLocal != null) {
+	        return alunoLocal;
+	    
+	    } else {
+
+	        Alunos novoAluno = new Alunos();
+	        
+	        novoAluno.setAtivo(true);
+	        novoAluno.setCelular("(45) 11111-1111");
+	        novoAluno.setCpf("008.398.349-00");
+	        novoAluno.setCurso(alunoUniamerica.getCurso());
+
+	        // Define a data de nascimento usando SimpleDateFormat
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	        Date dataNascimento = null;
+			try {
+				dataNascimento = sdf.parse("2024-01-01");
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        novoAluno.setDataNascimento(dataNascimento);
+	        
+	        novoAluno.setEmail("fulano@email.com");
+	        novoAluno.setRa(alunoUniamerica.getRa());
+	        novoAluno.setNome(alunoUniamerica.getNome());
+	        novoAluno.setSenha("123");
+	        novoAluno.setUsuario(alunoUniamerica.getNome());
+	        
+	        
+	        novoAluno = this.alunosRepository.save(novoAluno);
+	        
+	        return novoAluno;
+	    }
+	}
+	
 	public Alunos findByCpf(String cpf) {
 		return this.alunosRepository.findByCpf(cpf);
 	}

@@ -40,17 +40,17 @@ public class Alunos {
 	@NotNull(message="Por favor, informe a data de nascimento do aluno")
 	private Date dataNascimento;
 	
-	@Column(unique=true)
-	@NotBlank(message="Por favor, informe o CPF do aluno")
-	@CPF(message="CPF inválido")
+	// @Column(unique=true)
+	// @NotBlank(message="Por favor, informe o CPF do aluno")
+	// @CPF(message="CPF inválido")
 	private String cpf;
 	
-	@NotBlank(message="Por favor, informe o email do aluno")
-	@Email(message="E-mail inválido")
+	// @NotBlank(message="Por favor, informe o email do aluno")
+	// @Email(message="E-mail inválido")
 	private String email;
 	
-	@NotBlank(message="Por favor, informe o telefone do aluno")
-	@Pattern(regexp = "\\(\\d{2}\\) ?\\d{5}-\\d{4}", message = "O telefone deve corresponder ao formato (xx) xxxxx-xxxx")
+	// @NotBlank(message="Por favor, informe o telefone do aluno")
+	// @Pattern(regexp = "\\(\\d{2}\\) ?\\d{5}-\\d{4}", message = "O telefone deve corresponder ao formato (xx) xxxxx-xxxx")
 	private String celular;
 	
 	

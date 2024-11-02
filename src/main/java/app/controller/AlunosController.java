@@ -76,6 +76,9 @@ public class AlunosController {
 			Alunos aluno = this.alunosService.findByRa(ra);
 			return new ResponseEntity<>(aluno, HttpStatus.OK);
 		} catch (Exception e) {
+			
+			System.out.println(e.getMessage());
+			
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
 		}
 	}
