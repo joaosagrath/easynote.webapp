@@ -1,12 +1,12 @@
-package app.repository;
+package app.auth;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import app.entity.Usuarios;
 import jakarta.transaction.Transactional;
 
 public interface UsuariosRepository extends JpaRepository<Usuarios, Long>{
@@ -15,7 +15,7 @@ public interface UsuariosRepository extends JpaRepository<Usuarios, Long>{
 	
 	public Usuarios findByCpf(String cpf);
 	
-	public Usuarios findByLogin(String login);
+	public Optional<Usuarios> findByLogin(String login);
 	
 	@Modifying
 	@Transactional

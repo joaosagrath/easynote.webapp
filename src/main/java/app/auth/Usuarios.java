@@ -1,12 +1,18 @@
-package app.entity;
+package app.auth;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import app.entity.Emprestimos;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +35,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Usuarios {
+public class Usuarios implements UserDetails {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,13 +44,18 @@ public class Usuarios {
 	@NotBlank(message="Por favor, informe o nome do usuario")
 	private String nome;
 	
+	@NotBlank(message="Por favor, informe o papel do usuario")
+	private String role;
+	
 	@Column(unique=true)
 	@NotBlank(message="Por favor, informe o CPF do usuario")
 	@CPF(message="CPF inválido")
 	private String cpf;
 	
+	@Column(unique=true)
 	@NotBlank(message="Por favor, informe o LOGIN do usuario")
 	private String login;
+	
 	@NotBlank(message="Por favor, informe o SENHA do usuario")
 	private String senha;
 	
@@ -54,6 +65,29 @@ public class Usuarios {
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("usuario")
 	private List<Emprestimos> emprestimos;
+	
+	
+	
+	// AUTH
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> authorities = new ArrayList<>();
+	    authorities.add(new SimpleGrantedAuthority(this.role));
+	    return authorities;
+	}
+
+	@Override
+	public String getPassword() {
+		// TODO Auto-generated method stub
+		return senha;
+	}
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return login;
+	}
 	
 	
 }

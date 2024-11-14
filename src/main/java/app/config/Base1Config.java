@@ -18,7 +18,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 @Configuration
 @EnableJpaRepositories(
-		basePackages = "app.repository", //colocar aqui o caminho do package dos REPOSITORIES desta configuração
+		basePackages = {"app.repository","app.auth"}, //colocar aqui o caminho do package dos REPOSITORIES desta configuração
 		entityManagerFactoryRef = "base1EntityManager") //atualizar o nome baseX
 public class Base1Config {
 
@@ -36,7 +36,7 @@ public class Base1Config {
 			@Qualifier("base1DataSource") DataSource dataSource) { //atualizar o nome baseX
 		return builder
 				.dataSource(dataSource)
-				.packages("app.entity") //colocar aqui o caminho do package das ENTITIES desta configuração
+				.packages("app.entity","app.auth") //colocar aqui o caminho do package das ENTITIES desta configuração
 				.properties(hibernateProperties())
 				.build();
 	}

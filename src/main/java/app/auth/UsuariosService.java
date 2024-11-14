@@ -1,13 +1,16 @@
-package app.service;
+package app.auth;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import app.entity.Usuarios;
-import app.repository.UsuariosRepository;
+import app.config.JwtServiceGenerator;
 
 @Service
 public class UsuariosService {
@@ -15,9 +18,33 @@ public class UsuariosService {
 	@Autowired
 	private UsuariosRepository usuariosRepository;
 	
+	@Autowired
+	private JwtServiceGenerator jwtService;
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private BCryptPasswordEncoder bCryptEncoder;
+
+	public String logar(Login login) {
+		authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(
+						login.getUsuario(),
+						login.getSenha()
+						)
+				);
+		Usuarios user = usuariosRepository.findByLogin(login.getUsuario()).get();
+		String jwtToken = jwtService.generateToken(user);
+		
+		return jwtToken;
+	}
+	
 
 	public String save (Usuarios usuarios) {
 		usuarios.setAtivo(true);
+		
+		usuarios.setSenha(this.bCryptEncoder.encode(usuarios.getSenha()));
+		
 		this.usuariosRepository.save(usuarios);
 		return "Usuário cadastrado com sucesso!";
 	}
@@ -58,12 +85,15 @@ public class UsuariosService {
 		return this.usuariosRepository.findByCpf(cpf);
 	}
 	
-	public Usuarios findByLogin(String login) {
+	/*public Usuarios findByLogin(String login) {
 		return this.usuariosRepository.findByLogin(login);
-	}
+	}*/
 	
 	public List<Usuarios> findByNome(String nome){
 		 return usuariosRepository.findByNomeContains(nome);
 	}
+	
+
+
 	
 }

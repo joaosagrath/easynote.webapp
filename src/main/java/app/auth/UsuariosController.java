@@ -1,10 +1,12 @@
-package app.controller;
+package app.auth;
 
 import java.util.List;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import app.entity.Usuarios;
-import app.service.UsuariosService;
 import jakarta.validation.Valid;
 
 @Validated
@@ -29,6 +29,19 @@ public class UsuariosController {
 
 	@Autowired
 	private UsuariosService usuarioService;
+	
+	@PostMapping("/login")
+	public ResponseEntity<String> logar(@RequestBody Login login) {
+		try {
+			return ResponseEntity.ok(usuarioService.logar(login));
+		}catch(AuthenticationException ex) {
+			System.out.println(ex.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+		}catch (Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
 	
 
 	@PostMapping("/save")
@@ -92,7 +105,7 @@ public class UsuariosController {
 		}
 	}
 	
-	@GetMapping("/findByLogin")
+	/*@GetMapping("/findByLogin")
 	public ResponseEntity<Usuarios> findByLogin(@RequestParam String login){
 		try {
 			Usuarios user = this.usuarioService.findByLogin(login);
@@ -100,7 +113,7 @@ public class UsuariosController {
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
 		}
-	}
+	}*/
 	
 	@DeleteMapping("/delete/{id}") 
 	public ResponseEntity<String> delete(@PathVariable long id){
