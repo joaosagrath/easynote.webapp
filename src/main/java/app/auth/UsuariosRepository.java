@@ -20,5 +20,5 @@ public interface UsuariosRepository extends JpaRepository<Usuarios, Long>{
 	@Modifying
 	@Transactional
 	@Query("UPDATE Usuarios u SET u.ativo = false WHERE u.id = :id")
-	public String desativarUsuarios(long id);
+	public void desativarUsuarios(long id);
 }

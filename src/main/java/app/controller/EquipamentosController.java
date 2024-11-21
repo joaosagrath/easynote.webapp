@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,7 @@ public class EquipamentosController {
 	
 
 	@PostMapping("/save")
+	@PreAuthorize("HasRole('Admin')")
 	public ResponseEntity<String> save(@Valid @RequestBody Equipamentos equipamento){
 		try {
 			String mensagem = this.equipamentosService.save(equipamento);
@@ -44,6 +46,7 @@ public class EquipamentosController {
 	}
 	
 	@PutMapping("/update/{id}")
+	@PreAuthorize("HasRole('Admin')")
 	public ResponseEntity<String> update(@Valid @RequestBody Equipamentos equipamento, @PathVariable long id){
 		try {
 			String mensagem = this.equipamentosService.update(equipamento, id);
@@ -169,6 +172,7 @@ public class EquipamentosController {
 	}
 	
 	@PutMapping("/desativarEquipamento")
+	@PreAuthorize("HasRole('Admin')")
 	public ResponseEntity<String> desativar(@RequestParam String patrimonio){
 		try {
 			String mensagem = this.equipamentosService.delete(patrimonio);
@@ -179,6 +183,7 @@ public class EquipamentosController {
 	}
 	
 	@PutMapping("/reativarEquipamento")
+	@PreAuthorize("HasRole('Admin')")
 	public ResponseEntity<String> reativar(@RequestParam String patrimonio){
 		try {
 			String mensagem = this.equipamentosService.reativarEquipamento(patrimonio);

@@ -51,6 +51,7 @@ public class UsuariosService {
 	
 	public String update (Usuarios usuarios, long id) {
 		usuarios.setId(id);
+		usuarios.setSenha(this.bCryptEncoder.encode(usuarios.getSenha()));
 		this.usuariosRepository.save(usuarios);
 		return "Usuário atualizado com sucesso!";
 	}
@@ -59,6 +60,7 @@ public class UsuariosService {
 		
 		Optional<Usuarios> optional = this.usuariosRepository.findById(id);
 		if(optional.isPresent()) {
+			optional.get().setSenha("");
 			return optional.get();
 		}else
 		  throw new RuntimeException("Usuário não encontrado");

@@ -63,8 +63,8 @@ public class Usuarios implements UserDetails {
 	
 	private boolean ativo;
 	
-	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-	@JsonIgnoreProperties("usuario")
+	@OneToMany(mappedBy = "usuario")
+	@JsonIgnoreProperties({"usuario", "aluno"})
 	private List<Emprestimos> emprestimos;
 	
 	
@@ -89,6 +89,11 @@ public class Usuarios implements UserDetails {
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		return login;
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		return ativo;
 	}
 	
 	

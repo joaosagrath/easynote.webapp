@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -45,6 +46,7 @@ public class UsuariosController {
 	
 
 	@PostMapping("/save")
+	@PreAuthorize("HasRole('Admin')")
 	public ResponseEntity<String> save(@Valid @RequestBody Usuarios usuario){
 		try {
 			String mensagem = this.usuarioService.save(usuario);
@@ -55,6 +57,7 @@ public class UsuariosController {
 	}
 	
 	@PutMapping("/update/{id}")
+	@PreAuthorize("HasRole('Admin')")
 	public ResponseEntity<String> update(@Valid @RequestBody Usuarios usuario, @PathVariable long id){
 		try {
 			String mensagem = this.usuarioService.update(usuario, id);
@@ -105,22 +108,16 @@ public class UsuariosController {
 		}
 	}
 	
-	/*@GetMapping("/findByLogin")
-	public ResponseEntity<Usuarios> findByLogin(@RequestParam String login){
-		try {
-			Usuarios user = this.usuarioService.findByLogin(login);
-			return new ResponseEntity<>(user, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
-		}
-	}*/
 	
-	@DeleteMapping("/delete/{id}") 
-	public ResponseEntity<String> delete(@PathVariable long id){
+	@PutMapping("/delete")
+	@PreAuthorize("HasRole('Admin')")
+	public ResponseEntity<String> delete(@RequestParam long id){
 		try {
 			String mensagem = this.usuarioService.delete(id);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
 		}
 	}
