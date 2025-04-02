@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +69,7 @@ public class EquipamentosController {
 		}
 	}
 	
+	
 	@GetMapping("/findAll")
 	public ResponseEntity<List<Equipamentos>> findAll(){
 		try {
@@ -74,6 +78,20 @@ public class EquipamentosController {
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
 		}
+	}
+	
+	
+	@GetMapping("/findAllPage")
+	public ResponseEntity<Page<Equipamentos>> findAll(
+	        @RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "10") int size) {
+	    try {
+	        Pageable pageable = PageRequest.of(page, size);
+	        Page<Equipamentos> paginaEquipamentos = this.equipamentosService.findAllPage(pageable);
+	        return new ResponseEntity<>(paginaEquipamentos, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	    }
 	}
 	
 	@GetMapping("/findByPatrimonio")

@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,10 +77,10 @@ public class EmprestimosController {
 		}
 	}
 	
+
+	
 	@GetMapping("/findByFilter")
 	public ResponseEntity<List<Emprestimos>> findByFilter(
-			//@RequestParam(value="dataRetirada", required=false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataRetirada, 
-	       // @RequestParam(value="dataDevolucao", required=false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataDevolucao,
 			@RequestParam(value="dataRetirada",required = false) LocalDateTime dataRetirada,
 			@RequestParam(value="dataDevolucao",required = false) LocalDateTime dataDevolucao,
 			@RequestParam("situacao") String situacao, 

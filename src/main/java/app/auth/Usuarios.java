@@ -40,7 +40,7 @@ public class Usuarios implements UserDetails {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	
 	@NotBlank(message="Por favor, informe o nome do usuario")
 	private String nome;
@@ -57,7 +57,7 @@ public class Usuarios implements UserDetails {
 	@NotBlank(message="Por favor, informe o LOGIN do usuario")
 	private String login;
 	
-	@NotBlank(message="Por favor, informe o SENHA do usuario")
+	//@NotBlank(message="Por favor, informe o SENHA do usuario")
 	private String senha;
 	
 	

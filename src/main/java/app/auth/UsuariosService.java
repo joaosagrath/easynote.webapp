@@ -49,18 +49,48 @@ public class UsuariosService {
 		return "Usuário cadastrado com sucesso!";
 	}
 	
-	public String update (Usuarios usuarios, long id) {
-		usuarios.setId(id);
-		usuarios.setSenha(this.bCryptEncoder.encode(usuarios.getSenha()));
-		this.usuariosRepository.save(usuarios);
-		return "Usuário atualizado com sucesso!";
+	public String update(Usuarios usuarios, long id) {
+	    // Busca o usuário existente
+	    Usuarios existingUser = this.findByIdLocal(id);
+	    if (existingUser == null) {
+	        return "Usuário não encontrado!";
+	    }
+
+	    // Define o ID do usuário a ser atualizado
+	    usuarios.setId(id);
+
+	    // Verifica e mantém a senha existente, se necessário
+	    if (usuarios.getSenha() == null || usuarios.getSenha().isEmpty()) {
+	        usuarios.setSenha(existingUser.getSenha());
+	    } else {
+	        usuarios.setSenha(this.bCryptEncoder.encode(usuarios.getSenha()));
+	    }
+
+	    // Preserva outros atributos do usuário original, se necessário
+	    usuarios.setAtivo(existingUser.isAtivo()); // Exemplo para preservar o estado ativo
+
+	    // Atualiza o usuário no banco
+	    this.usuariosRepository.save(usuarios);
+
+	    return "Usuário atualizado com sucesso!";
 	}
+
 	
 	public Usuarios findById (long id) {
 		
 		Optional<Usuarios> optional = this.usuariosRepository.findById(id);
 		if(optional.isPresent()) {
 			optional.get().setSenha("");
+			return optional.get();
+		}else
+		  throw new RuntimeException("Usuário não encontrado");
+		
+	}
+	
+	private Usuarios findByIdLocal (long id) {
+		
+		Optional<Usuarios> optional = this.usuariosRepository.findById(id);
+		if(optional.isPresent()) {
 			return optional.get();
 		}else
 		  throw new RuntimeException("Usuário não encontrado");

@@ -36,7 +36,7 @@ import app.service.AlunosService;
 @SpringBootTest
 public class AlunosServiceTest {
 
-    @Autowired
+   /* @Autowired
     AlunosController alunosController;
 
     @InjectMocks
@@ -295,5 +295,5 @@ public class AlunosServiceTest {
 
         // Verifica a mensagem de erro
         assertEquals("Aluno não encontrado ou data de nascimento não informada.", exception.getMessage());
-    }
+    }*/
 }

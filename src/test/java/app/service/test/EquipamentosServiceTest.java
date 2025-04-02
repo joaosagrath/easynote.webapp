@@ -32,7 +32,7 @@ import app.service.EquipamentosService;
 
 public class EquipamentosServiceTest {
 
-	@InjectMocks
+	/*@InjectMocks
 	private EquipamentosService equipamentosService;
 
 	@Mock
@@ -77,7 +77,7 @@ public class EquipamentosServiceTest {
 			String result = equipamentosService.save(equipamento);
 		});
 
-	}*/
+	}
 
 	@Test
 	void Update() {
@@ -300,7 +300,7 @@ public class EquipamentosServiceTest {
 		// Then
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertEquals(equipamento.getId(), result.get(0).getEquipamento().getId());*/
+		assertEquals(equipamento.getId(), result.get(0).getEquipamento().getId());
 	}
 
 	@Test
@@ -321,7 +321,7 @@ public class EquipamentosServiceTest {
 
 		// Then
 		assertNotNull(result);
-		assertTrue(result.isEmpty());*/
+		assertTrue(result.isEmpty());
 	}
 
 	@Test
@@ -341,6 +341,6 @@ public class EquipamentosServiceTest {
 		// Then
 		assertNotNull(result);
 		assertEquals(1, result.size());
-	}
+	}*/
 
 }

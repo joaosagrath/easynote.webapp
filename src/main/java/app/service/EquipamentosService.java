@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import app.entity.Emprestimos;
@@ -52,11 +54,16 @@ public class EquipamentosService {
 			return null;
 
 	}
-
+	
 	public List<Equipamentos> findAll() {
 
 		return this.equipamentosRepository.findAll();
 
+	}
+	
+	
+	public Page<Equipamentos> findAllPage(Pageable pageable) {
+	    return this.equipamentosRepository.findAll(pageable);
 	}
 
 	public String delete(String patrimonio) {
