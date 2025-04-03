@@ -90,6 +90,10 @@ public class EmprestimosService {
 			return this.emprestimosRepository.findAll();
 			
 	}
+	
+	public Page<Emprestimos> findAllPage(Pageable pageable) {
+	    return this.emprestimosRepository.findAll(pageable);
+	}
 
 	public String encerrarEmprestimo(long id) {
 		LocalDateTime data = LocalDateTime.now();
@@ -115,11 +119,16 @@ public class EmprestimosService {
 	    }
 	}
 	
-	public List<Emprestimos> findByFilter(LocalDateTime dataRetirada, LocalDateTime dataDevolucao,
-			String situacao, String ra, String usuario, String patrimonio) {
-	    return this.emprestimosRepository.findByFilter(dataRetirada, dataDevolucao, situacao, ra,
-	    		usuario, patrimonio);
-	}
+	public List<Emprestimos> findByFilter(
+		    LocalDateTime dataRetirada,
+		    LocalDateTime dataDevolucao,
+		    String situacao,
+		    String ra,
+		    String usuario,
+		    String patrimonio) {
+		    
+		    return emprestimosRepository.findByFilter(dataRetirada, dataDevolucao, situacao, ra, usuario, patrimonio);
+		}
 	
 	public List<Emprestimos> findBySituacao(String situacao){
 		return this.emprestimosRepository.findBySituacao(situacao);

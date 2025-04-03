@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.entity.Emprestimos;
+import app.entity.Equipamentos;
 import app.service.EmprestimosService;
 import jakarta.validation.Valid;
 
@@ -69,6 +71,7 @@ public class EmprestimosController {
 	
 	@GetMapping("/findAll")
 	public ResponseEntity<List<Emprestimos>> findAll(){
+		 System.out.println("Recebi uma requisição para findAll()!");
 		try {
 			List<Emprestimos> lista = this.emprestimosService.findAll();
 			return new ResponseEntity<>(lista, HttpStatus.OK);
@@ -77,6 +80,18 @@ public class EmprestimosController {
 		}
 	}
 	
+	@GetMapping("/findAllPage")
+	public ResponseEntity<Page<Emprestimos>> findAll(
+	        @RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "10") int size) {
+	    try {
+	        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dataRetirada"));
+	        Page<Emprestimos> paginaEmprestimo = this.emprestimosService.findAllPage(pageable);
+	        return new ResponseEntity<>(paginaEmprestimo, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	    }
+	}
 
 	
 	@GetMapping("/findByFilter")
@@ -105,6 +120,7 @@ public class EmprestimosController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
 		}
 	}
+
 	
 	@GetMapping("/findBySituacao")
 	public ResponseEntity<List<Emprestimos>> findBySituacao(@RequestParam String situacao){

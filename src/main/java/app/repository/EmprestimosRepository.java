@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -41,20 +43,20 @@ public interface EmprestimosRepository extends JpaRepository<Emprestimos, Long>{
 	@Query("FROM Emprestimos e WHERE e.equipamento.patrimonio = :patrimonio AND e.situacao = 'Em Andamento'")
 	public Optional<Emprestimos> findByEmprestimosByEquipamentoAtivo(String patrimonio);
 	
-	@Query("FROM Emprestimos e WHERE " +
-		       "( :dataRetirada is null or e.dataRetirada >= :dataRetirada ) AND " +
-		       "( :dataDevolucao is null or e.dataDevolucao <= :dataDevolucao ) AND " +
-		       "( :situacao = '' or e.situacao = :situacao ) AND " +
-		       "( :ra = '' or e.aluno.ra = :ra ) AND " +
-		       "( :usuario = '' or e.usuario.nome LIKE CONCAT('%', :usuario, '%') ) AND " +
-		       "( :patrimonio = '' or e.equipamento.patrimonio = :patrimonio )")
-		public List<Emprestimos> findByFilter(
-		       @Param("dataRetirada") LocalDateTime dataRetirada,
-		       @Param("dataDevolucao") LocalDateTime dataDevolucao,
-		       @Param("situacao") String situacao,
-		       @Param("ra") String ra,
-		       @Param("usuario") String usuario,
-		       @Param("patrimonio") String patrimonio);
+	@Query("SELECT e FROM Emprestimos e WHERE " +
+			   "(:dataRetirada IS NULL OR e.dataRetirada >= :dataRetirada) AND " +
+	           "(:dataDevolucao IS NULL OR e.dataDevolucao <= :dataDevolucao) AND " +
+	           "(:situacao = '' OR e.situacao = :situacao) AND " +
+	           "(:ra = '' OR e.aluno.ra = :ra) AND " +
+	           "(:usuario = '' OR e.usuario.nome = :usuario) AND " +
+	           "(:patrimonio = '' OR e.equipamento.patrimonio = :patrimonio)")
+	    List<Emprestimos> findByFilter(
+	        @Param("dataRetirada") LocalDateTime dataRetirada,
+	        @Param("dataDevolucao") LocalDateTime dataDevolucao,
+	        @Param("situacao") String situacao,
+	        @Param("ra") String ra,
+	        @Param("usuario") String usuario,
+	        @Param("patrimonio") String patrimonio);
 	
 	@Modifying
 	@Transactional
