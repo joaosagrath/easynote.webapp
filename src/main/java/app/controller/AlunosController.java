@@ -3,6 +3,10 @@ package app.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.entity.Alunos;
+import app.entity.Emprestimos;
+import app.entity.Equipamentos;
 import app.service.AlunosService;
 import jakarta.validation.Valid;
 
@@ -48,6 +54,19 @@ public class AlunosController {
 		} catch (Exception e) {
 			return new ResponseEntity<>("Deu erro!"+e.getMessage(), HttpStatus.BAD_REQUEST );
 		}
+	}
+	
+	@GetMapping("/findAllPage")
+	public ResponseEntity<Page<Alunos>> findAll(
+	        @RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "10") int size) {
+	    try {
+	        Pageable pageable = PageRequest.of(page, size);
+	        Page<Alunos> paginaEmprestimo = this.alunosService.findAllPage(pageable);
+	        return new ResponseEntity<>(paginaEmprestimo, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	    }
 	}
 
 	@GetMapping("/findById/{id}")
@@ -83,6 +102,17 @@ public class AlunosController {
 		}
 	}
 	
+	@GetMapping("/findByFilter")
+	public ResponseEntity<List<Alunos>> findByFilter(@RequestParam("ra") String ra, @RequestParam("nome") String nome,
+			@RequestParam("curso") String curso){
+		try {
+			List<Alunos> lista = this.alunosService.findByFilter(ra, nome, curso);
+			return new ResponseEntity<>(lista, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
+		}
+	}
+	
 	@GetMapping("/findByNome")
 	public ResponseEntity<List<Alunos>> findByNome(@RequestParam String nome){
 		try {
@@ -103,26 +133,6 @@ public class AlunosController {
 		}
 	}
 	
-	@GetMapping("/findByAlunoAtivo")
-	public ResponseEntity<List<Alunos>> findByAlunoAtivo(){
-		try {
-			List<Alunos> aluno = this.alunosService.findAlunosAtivos();
-			return new ResponseEntity<>(aluno, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
-		}
-	}
-	
-	@GetMapping("/findByAlunoInativo")
-	public ResponseEntity<List<Alunos>> findByAlunoInativo(){
-		try {
-			List<Alunos> aluno = this.alunosService.findAlunosInativos();
-			return new ResponseEntity<>(aluno, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
-		}
-	}
-	
 	@PutMapping("/desativarAluno")
 	public ResponseEntity<String> delete(@RequestParam String ra){
 		try {
@@ -130,16 +140,6 @@ public class AlunosController {
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST );
-		}
-	}
-	
-	@PutMapping("/reativarAluno")
-	public ResponseEntity<String> reativar(@RequestParam String ra){
-		try {
-			String mensagem = this.alunosService.reativarAluno(ra);
-			return new ResponseEntity<>(mensagem, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>("Deu erro!"+e.getMessage(), HttpStatus.BAD_REQUEST );
 		}
 	}
 	

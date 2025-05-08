@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import app.entity.Alunos;
 import app.entity.Emprestimos;
+import app.entity.Equipamentos;
 import app.repository.AlunosRepository;
 import app.repository.EmprestimosRepository;
 import app.uniamerica.entity.AlunoUniamerica;
@@ -53,6 +56,10 @@ public class AlunosService {
 			  throw new RuntimeException("Erro ao atualizar aluno!");
 			}
 	}
+	
+	public Page<Alunos> findAllPage(Pageable pageable) {
+	    return this.alunosRepository.findAll(pageable);
+	}
 
 	public Alunos findById(long id) {
 
@@ -75,7 +82,6 @@ public class AlunosService {
 		Alunos aluno = this.alunosRepository.findByRa(ra);
 	    long id = aluno.getId();
 		aluno.setId(id);
-		System.out.println(id);
 		Emprestimos emp = new Emprestimos();
 		emp.setAluno(aluno);
 		List<Emprestimos> lista = this.encontrarEmprestimoEmAndamentoPorAluno(emp);
@@ -96,17 +102,7 @@ public class AlunosService {
 		}
 
 	}
-	
-	public String reativarAluno(String ra) {
-	    Alunos aluno = this.alunosRepository.findByRa(ra);
-	    long id = aluno.getId();
-	    int alunoReativado = this.alunosRepository.reativarAlunos(id);
-	    if (alunoReativado > 0) {
-	        return "Aluno reativado com sucesso!";
-	    } else {
-	        throw new RuntimeException("Erro ao reativar aluno");
-	    }
-	}
+
 
 	private List<Emprestimos> encontrarEmprestimoEmAndamentoPorAluno(Emprestimos emp) {
 		Alunos aluno = new Alunos();
@@ -118,23 +114,13 @@ public class AlunosService {
 		return lista;
 	}
 
-	/*
-	 public Alunos findByRa(String ra) {
-
-        return this.alunosRepository.findByRa(ra);
-	}
-	 */	
 	
 	public Alunos findByRa(String ra) {
 	    AlunoUniamerica alunoUniamerica = this.alunoUniamericaService.findByRA(ra);
-	    Alunos alunoLocal = alunosRepository.findByRa(ra);
+	    Alunos alunoLocal = alunosRepository.findByRa(ra.trim());
 	    
-	    if (alunoLocal != null) {
-	        return alunoLocal;
-	    
-	    } else {
-
-	        Alunos novoAluno = new Alunos();
+	    if (alunoLocal == null) {
+	    	Alunos novoAluno = new Alunos();
 	        
 	        novoAluno.setAtivo(true);
 	        novoAluno.setCelular("(45) 11111-1111");
@@ -162,7 +148,14 @@ public class AlunosService {
 	        novoAluno = this.alunosRepository.save(novoAluno);
 	        
 	        return novoAluno;
+	        
+	    } else {
+	    	return alunoLocal; 
 	    }
+	}
+	
+	public List<Alunos> findByFilter(String ra, String nome, String curso) {
+	    return this.alunosRepository.findByFilter(ra, nome, curso);
 	}
 	
 	public Alunos findByCpf(String cpf) {
@@ -173,28 +166,5 @@ public class AlunosService {
 	    return this.alunosRepository.findByNomeContains(nome);
 	}
 	
-	public List<Alunos> findAlunosAtivos(){
-		return this.alunosRepository.findByAtivoTrue();
-	}
-	
-	public List<Alunos> findAlunosInativos(){
-		return this.alunosRepository.findByAtivoFalse();
-	}
-	
-	public String calcularIdade(long id) {
-        Alunos aluno = this.findById(id);
-        
-        if (aluno != null && aluno.getDataNascimento() != null) {
-            LocalDate dataNascimento = aluno.getDataNascimento()
-                                           .toInstant()
-                                           .atZone(ZoneId.systemDefault())
-                                           .toLocalDate();
-            LocalDate dataAtual = LocalDate.now();
-            int idade = Period.between(dataNascimento, dataAtual).getYears();
-            
-            return "A idade do aluno " + aluno.getNome() + " é: " + idade + " anos.";
-        } else {
-            throw new RuntimeException("Aluno não encontrado ou data de nascimento não informada.");
-        }
-    }
+
 }

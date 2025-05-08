@@ -102,23 +102,6 @@ public class EmprestimosService {
 		return "Empréstimo encerrado com sucesso";
 	}
 	
-	public String tempodeUso(Emprestimos emprestimo) {
-	    LocalDateTime dataRetirada = emprestimo.getDataRetirada();
-	    LocalDateTime dataDevolucao = emprestimo.getDataDevolucao();
-
-	    if (dataDevolucao != null && dataRetirada != null) {
-	        Duration duracao = Duration.between(dataRetirada, dataDevolucao);
-	        
-	        long dias = duracao.toDays();
-	        long horas = duracao.toHours() % 24; // Resto para calcular horas além dos dias
-	        long minutos = duracao.toMinutes() % 60; // Resto para calcular minutos além das horas
-
-	        return String.format("%d dias, %d horas, %d minutos", dias, horas, minutos);
-	    } else {
-	        return "Datas inválidas";
-	    }
-	}
-	
 	public List<Emprestimos> findByFilter(
 		    LocalDateTime dataRetirada,
 		    LocalDateTime dataDevolucao,

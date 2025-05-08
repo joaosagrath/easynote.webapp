@@ -1,12 +1,15 @@
 package app.auth;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +40,8 @@ public class UsuariosService {
 		String jwtToken = jwtService.generateToken(user);
 		
 		return jwtToken;
+		
 	}
-	
 
 	public String save (Usuarios usuarios) {
 		usuarios.setAtivo(true);
@@ -117,9 +120,9 @@ public class UsuariosService {
 		return this.usuariosRepository.findByCpf(cpf);
 	}
 	
-	/*public Usuarios findByLogin(String login) {
+	public Optional<Usuarios> findByLogin(String login) {
 		return this.usuariosRepository.findByLogin(login);
-	}*/
+	}
 	
 	public List<Usuarios> findByNome(String nome){
 		 return usuariosRepository.findByNomeContains(nome);
