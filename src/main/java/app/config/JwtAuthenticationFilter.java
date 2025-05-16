@@ -1,4 +1,4 @@
-package app.config;
+/*package app.config;
 
 //JwtAuthenticationFilter.java
 
@@ -57,4 +57,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 		filterChain.doFilter(request, response);
 	}
-}
+}*/

@@ -1,6 +1,7 @@
 package app.auth;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,18 +35,22 @@ public class UsuariosController {
 	private UsuariosService usuarioService;
 	
 	@PostMapping("/login")
-	public ResponseEntity<String> logar(@RequestBody Login login) {
-		try {
-			return ResponseEntity.ok(usuarioService.logar(login));
-		}catch(AuthenticationException ex) {
-			System.out.println(ex.getMessage());
-			return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-		}catch (Exception e) {
-			System.out.println(e.getMessage());
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-		}
+	public ResponseEntity<Map<String, Object>> logar(@RequestBody Login login) {
+	    try {
+	        // O método logar já retorna um ResponseEntity adequado (200, 401, etc.)
+	    	System.out.println(login.getUsuario() + login.getSenha());
+	        return usuarioService.logar(login.getUsuario(), login.getSenha());
+	    } catch (Exception e) {
+	        // Log detalhado do erro (pode usar logger)
+	        e.printStackTrace();
+
+	        Map<String, Object> error = new HashMap<>();
+	        error.put("error", "Erro interno ao processar o login");
+
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+	    }
 	}
-	
+
 
 	@PostMapping("/save")
 	@PreAuthorize("HasRole('Admin')")

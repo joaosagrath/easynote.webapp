@@ -1,19 +1,26 @@
 package app.auth;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import org.springframework.http.MediaType;
 
+import org.springframework.http.HttpHeaders;
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import app.config.JwtServiceGenerator;
 
 @Service
 public class UsuariosService {
@@ -21,14 +28,15 @@ public class UsuariosService {
 	@Autowired
 	private UsuariosRepository usuariosRepository;
 	
-	@Autowired
-	private JwtServiceGenerator jwtService;
+	//@Autowired
+	//private JwtServiceGenerator jwtService;
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptEncoder;
-
+	
+	/*
 	public String logar(Login login) {
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
@@ -42,6 +50,48 @@ public class UsuariosService {
 		return jwtToken;
 		
 	}
+	*/
+	
+	@Autowired
+    private RestTemplate restTemplate;
+
+    private final String keycloakTokenUrl = "https://backend.local.easynote.com.br:8443/realms/projetomensal/protocol/openid-connect/token";
+    private final String clientId = "easynote";
+    private final String clientSecret = "2WgMvyUpTEXCNosmP1AR2Dwwf4pFAPln"; // ou remova se o client não exige
+
+    public ResponseEntity<Map<String, Object>> logar(String username, String password) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("client_id", clientId);
+        formData.add("username", username);
+        formData.add("password", password);
+        formData.add("grant_type", "password");
+        formData.add("client_secret", clientSecret); // remova esta linha se não precisar
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
+
+        try {
+        	ResponseEntity<String> response = restTemplate.postForEntity(keycloakTokenUrl, request, String.class);
+        	ObjectMapper mapper = new ObjectMapper();
+        	JsonNode jsonNode = mapper.readTree(response.getBody());
+        	String accessToken = jsonNode.get("access_token").asText();
+        	int expiresIn = jsonNode.get("expires_in").asInt();
+
+        	Map<String, Object> result = new HashMap<>();
+        	result.put("token", accessToken);
+        	result.put("expiresIn", expiresIn);
+
+        	return ResponseEntity.ok(result);
+        } catch (Exception e) {
+        	// Retornando um Map no catch com uma mensagem de erro
+            Map<String, Object> errorResult = new HashMap<>();
+            errorResult.put("error", "Usuário ou senha inválidos");
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResult);
+        }
+    }
 
 	public String save (Usuarios usuarios) {
 		usuarios.setAtivo(true);
