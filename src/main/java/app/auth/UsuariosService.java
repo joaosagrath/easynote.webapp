@@ -82,6 +82,8 @@ public class UsuariosService {
         	Map<String, Object> result = new HashMap<>();
         	result.put("token", accessToken);
         	result.put("expiresIn", expiresIn);
+        	
+        	System.out.println("COMPARAR COM BANCO AQUI");
 
         	return ResponseEntity.ok(result);
         } catch (Exception e) {

@@ -4,12 +4,7 @@ import java.util.Arrays;
 
 import javax.net.ssl.TrustManager;
 
-import org.apache.catalina.connector.Connector;
-import org.apache.tomcat.util.descriptor.web.SecurityCollection;
-import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -25,12 +20,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.client.RestTemplate;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
@@ -82,9 +73,7 @@ public class SecurityConfig {
       UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
       CorsConfiguration config = new CorsConfiguration();
       config.setAllowCredentials(true);
-      //config.setAllowedOriginPatterns(Arrays.asList("*"));
-      config.setAllowedOriginPatterns(Arrays.asList("http://localhost:4200", "https://site.local.easynote.com.br"));
-
+      config.setAllowedOriginPatterns(Arrays.asList("*"));
       config.setAllowedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE, HttpHeaders.ACCEPT));
       config.setAllowedMethods(
           Arrays.asList(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(), HttpMethod.DELETE.name()));
@@ -94,33 +83,4 @@ public class SecurityConfig {
       bean.setOrder(-102);
       return bean;
     }
-    
-        @Bean
-        public ServletWebServerFactory servletContainer() {
-            TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
-                @Override
-                protected void postProcessContext(org.apache.catalina.Context context) {
-                    SecurityConstraint securityConstraint = new SecurityConstraint();
-                    securityConstraint.setUserConstraint("CONFIDENTIAL");
-                    SecurityCollection collection = new SecurityCollection();
-                    collection.addPattern("/*");
-                    securityConstraint.addCollection(collection);
-                    context.addConstraint(securityConstraint);
-                }
-            };
-
-            // Porta HTTP redirecionando para HTTPS
-            tomcat.addAdditionalTomcatConnectors(httpToHttpsRedirectConnector());
-            return tomcat;
-        }
-
-        private Connector httpToHttpsRedirectConnector() {
-            Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
-            connector.setScheme("http");
-            connector.setPort(8080); // Porta HTTP
-            connector.setSecure(false);
-            connector.setRedirectPort(8444); // Porta HTTPS
-            return connector;
-        }
-
 }
