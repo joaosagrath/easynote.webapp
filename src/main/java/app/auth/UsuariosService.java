@@ -5,6 +5,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.HttpHeaders;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,9 +57,9 @@ public class UsuariosService {
 	@Autowired
     private RestTemplate restTemplate;
 
-    private final String keycloakTokenUrl = "https://backend.local.easynote.com.br:8443/realms/projetomensal/protocol/openid-connect/token";
+    private final String keycloakTokenUrl = "https://backend.local.easynote.com.br:8443/realms/easynote/protocol/openid-connect/token";
     private final String clientId = "easynote";
-    private final String clientSecret = "2WgMvyUpTEXCNosmP1AR2Dwwf4pFAPln"; // ou remova se o client não exige
+    private final String clientSecret = "IW26TemJOqXLIP3tzaVMcSl1HYENSd8I"; // ou remova se o client não exige
 
     public ResponseEntity<Map<String, Object>> logar(String username, String password) {
         HttpHeaders headers = new HttpHeaders();
@@ -78,14 +80,75 @@ public class UsuariosService {
         	JsonNode jsonNode = mapper.readTree(response.getBody());
         	String accessToken = jsonNode.get("access_token").asText();
         	int expiresIn = jsonNode.get("expires_in").asInt();
+        	List<String> roles = new ArrayList<>();
 
         	Map<String, Object> result = new HashMap<>();
         	result.put("token", accessToken);
         	result.put("expiresIn", expiresIn);
         	
-        	System.out.println("COMPARAR COM BANCO AQUI");
+        	// Decodificar o token JWT para extrair os roles
+            String[] tokenParts = accessToken.split("\\.");
+            if (tokenParts.length == 3) {
+                String payload = new String(Base64.getUrlDecoder().decode(tokenParts[1]));
+                JsonNode payloadNode = mapper.readTree(payload);  
 
+                // Extrair roles de realm_access
+                JsonNode realmAccess = payloadNode.get("realm_access");
+                if (realmAccess != null && realmAccess.has("roles")) {
+                    for (JsonNode roleNode : realmAccess.get("roles")) {
+                        roles.add(roleNode.asText());
+                    }
+                }
+
+                // Extrair roles de resource_access > easynote
+                JsonNode resourceAccess = payloadNode.get("resource_access");
+                if (resourceAccess != null && resourceAccess.has("easynote")) {
+                    JsonNode easynoteRoles = resourceAccess.get("easynote").get("roles");
+                    if (easynoteRoles != null) {
+                        for (JsonNode roleNode : easynoteRoles) {
+                            roles.add(roleNode.asText());
+                        }
+                    }
+                }
+
+                // Adicionar lista de roles ao resultado
+                result.put("roles", roles);
+                
+                if (!roles.contains("Easynote")) {
+                	throw new RuntimeException("Usuário não autorizado!"); 
+                } 
+            }
+        	
+        	//System.out.println("Login :" + username);
+        	
+        	 //2. Verifica se existe no banco local
+            Optional<Usuarios> optionalUsuario = usuariosRepository.findByLogin(username);
+        	 
+        	
+            if (!optionalUsuario.isPresent()) {
+            	
+            	Usuarios novoUser = new Usuarios();
+            	novoUser.setLogin(username);
+            	novoUser.setNome(username);
+            	novoUser.setAtivo(true);
+        		novoUser.setSenha(this.bCryptEncoder.encode(password));
+            	
+            	
+            	if(roles.contains("Admin")) {
+            		novoUser.setRole("Admin");
+            	}else if (roles.contains("Colaborador")) {
+            		novoUser.setRole("Colaborador");
+            	}
+            	
+            	this.usuariosRepository.save(novoUser);
+            	System.out.println("NovoUser salvo!");
+            
+            } else {
+                System.out.println("Usuário já existe no banco da aplicação: " + username);
+            }
+            
         	return ResponseEntity.ok(result);
+        
         } catch (Exception e) {
         	// Retornando um Map no catch com uma mensagem de erro
             Map<String, Object> errorResult = new HashMap<>();

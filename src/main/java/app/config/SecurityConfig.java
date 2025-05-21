@@ -63,7 +63,7 @@ public class SecurityConfig {
     @Bean
     public JwtDecoder jwtDecoder() {
       return NimbusJwtDecoder
-          .withJwkSetUri("https://backend.local.easynote.com.br:8443/realms/projetomensal/protocol/openid-connect/certs")
+          .withJwkSetUri("https://backend.local.easynote.com.br:8443/realms/easynote/protocol/openid-connect/certs")
           .build();
     }
     

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,6 @@ public class UsuariosController {
 	public ResponseEntity<Map<String, Object>> logar(@RequestBody Login login) {
 	    try {
 	        // O método logar já retorna um ResponseEntity adequado (200, 401, etc.)
-	    	System.out.println(login.getUsuario() + login.getSenha());
 	        return usuarioService.logar(login.getUsuario(), login.getSenha());
 	    } catch (Exception e) {
 	        // Log detalhado do erro (pode usar logger)
@@ -83,6 +83,21 @@ public class UsuariosController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST );
 		}
 	}
+	
+	@GetMapping("/findByLogin/{login}")
+	public ResponseEntity<Usuarios> findByLogin(@PathVariable String login) {
+	    try {
+	        Optional<Usuarios> usuario = usuarioService.findByLogin(login);
+	        if (usuario.isPresent()) {
+	            return new ResponseEntity<>(usuario.get(), HttpStatus.OK);
+	        } else {
+	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	        }
+	    } catch (Exception e) {
+	        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	    }
+	}
+
 	
 	@GetMapping("/findAll")
 	public ResponseEntity<List<Usuarios>> findAll(){

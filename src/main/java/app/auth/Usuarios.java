@@ -50,7 +50,7 @@ public class Usuarios implements UserDetails {
 	private String role;
 	
 	@Column(unique=true)
-	@NotBlank(message="Por favor, informe o CPF do usuario")
+	//@NotBlank(message="Por favor, informe o CPF do usuario")
 	@CPF(message="CPF inválido")
 	private String cpf;
 	
