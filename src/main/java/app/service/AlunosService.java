@@ -118,6 +118,14 @@ public class AlunosService {
 	public Alunos findByRa(String ra) {
 	    AlunoUniamerica alunoUniamerica = this.alunoUniamericaService.findByRA(ra);
 	    Alunos alunoLocal = alunosRepository.findByRa(ra.trim());
+	
+	 // Se o aluno NÃO estiver mais na view (ou seja, não está ativo)
+	    if (alunoUniamerica == null) {
+	        if (alunoLocal != null) {
+	            alunosRepository.desativarAlunos(alunoLocal.getId());
+	        }
+	        throw new RuntimeException("Aluno não está ativo na instituição!");
+	    }
 	    
 	    if (alunoLocal == null) {
 	    	Alunos novoAluno = new Alunos();

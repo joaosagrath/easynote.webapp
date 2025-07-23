@@ -26,7 +26,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Emprestimos {
+public class Emprestimos extends Auditable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

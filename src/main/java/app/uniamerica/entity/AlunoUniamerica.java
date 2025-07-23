@@ -23,4 +23,5 @@ public class AlunoUniamerica {
 	
 	private String curso;
 	
+	
 }

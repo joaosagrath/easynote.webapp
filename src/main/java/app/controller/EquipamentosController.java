@@ -52,6 +52,7 @@ public class EquipamentosController {
 	@PreAuthorize("HasRole('Admin')")
 	public ResponseEntity<String> update(@Valid @RequestBody Equipamentos equipamento, @PathVariable long id){
 		try {
+			System.out.println("ID do Equipamento: " + id);
 			String mensagem = this.equipamentosService.update(equipamento, id);
 			return new ResponseEntity<>(mensagem, HttpStatus.OK);
 		} catch (Exception e) {

@@ -1,5 +1,6 @@
 package app.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +63,47 @@ public interface EmprestimosRepository extends JpaRepository<Emprestimos, Long>{
 	@Transactional
 	@Query("UPDATE Emprestimos e SET e.dataDevolucao = :date, e.situacao = :situacao WHERE e.id = :id")
 	public void encerrarEmprestimos(long id, LocalDateTime date, String situacao);
+	
+	/*@Query("SELECT u.id, u.createdBy, u.createdDate, u.lastModifiedBy, u.lastModifiedDate FROM Emprestimos u")
+	List<Object[]> findAuditoriaEmprestimos();*/
+
+	/*@Query("""
+		    SELECT em.id, em.createdBy, em.createdDate, em.lastModifiedBy, em.lastModifiedDate
+		    FROM Emprestimos em
+		    WHERE (:criadoPor IS NULL OR em.createdBy LIKE CONCAT('%', :criadoPor, '%'))
+		      AND (:modificadoPor IS NULL OR em.lastModifiedBy LIKE CONCAT('%', :modificadoPor, '%'))
+		      AND (:dataInicio IS NULL OR em.createdDate >= :dataInicio OR em.lastModifiedDate >= :dataInicio)
+			  AND (:dataFim IS NULL OR em.createdDate <= :dataFim OR em.lastModifiedDate <= :dataFim)
+		""")
+		List<Object[]> findAuditoriaEmprestimosComFiltro(
+		    @Param("criadoPor") String criadoPor,
+		    @Param("modificadoPor") String modificadoPor,
+		    @Param("dataInicio") LocalDateTime dataInicio,
+		    @Param("dataFim") LocalDateTime dataFim
+		);*/
+	
+	@Query("""
+		    SELECT em.id, em.createdBy, em.createdDate, em.lastModifiedBy, em.lastModifiedDate
+		    FROM Emprestimos em
+		    WHERE (:criadoPor IS NULL OR em.createdBy LIKE CONCAT('%', :criadoPor, '%'))
+		      AND (:modificadoPor IS NULL OR em.lastModifiedBy LIKE CONCAT('%', :modificadoPor, '%'))
+		      AND (
+		        (:dataInicio IS NULL AND :dataFim IS NULL)
+		        OR (:dataInicio IS NOT NULL AND :dataFim IS NULL AND (em.createdDate >= :dataInicio OR em.lastModifiedDate >= :dataInicio))
+		        OR (:dataInicio IS NULL AND :dataFim IS NOT NULL AND (em.createdDate <= :dataFim OR em.lastModifiedDate <= :dataFim))
+		        OR (:dataInicio IS NOT NULL AND :dataFim IS NOT NULL AND 
+		            ((em.createdDate BETWEEN :dataInicio AND :dataFim) OR 
+		             (em.lastModifiedDate BETWEEN :dataInicio AND :dataFim)))
+		      )
+		""")
+		List<Object[]> findAuditoriaEmprestimosComFiltro(
+		    @Param("criadoPor") String criadoPor,
+		    @Param("modificadoPor") String modificadoPor,
+		    @Param("dataInicio") LocalDateTime dataInicio,
+		    @Param("dataFim") LocalDateTime dataFim
+		);
+
+
 
 
 }

@@ -37,6 +37,8 @@ public class EquipamentosService {
 
 	public String update(Equipamentos equipamentos, long id) {
 		equipamentos.setId(id);
+		System.out.println("ID do Equipamento recebido na service: " + equipamentos.getId());
+		System.out.println("Patrimônio do Equipamento recebido na service: " + equipamentos.getPatrimonio());
 		Equipamentos equip = this.equipamentosRepository.save(equipamentos);
 		if(equip != null) {
 			   return "Equipamento salvo com sucesso!";
@@ -79,11 +81,21 @@ public class EquipamentosService {
 		if (lista != null) {
 			throw new RuntimeException("Equipamento possui empréstimo em andamento!");
 		}else {
-			
-			int equipDesativado = this.equipamentosRepository.desativarEquipamentos(id, "Desativado");
+			equipamento.setAtivo(false);
+			equipamento.setSituacao("Desativado");
+			/*int equipDesativado = this.equipamentosRepository.desativarEquipamentos(id, "Desativado");
 		    if (equipDesativado > 0) {
 		        return "Equipamento desativado com sucesso!";
 		    } else {
+		        throw new RuntimeException("Erro ao desativar equipamento!");
+		    }*/
+			
+			Equipamentos equipDel = this.equipamentosRepository.save(equipamento);
+			
+			if(equipDel != null) {
+				return "Equipamento desativado com sucesso!";
+			}
+			else {
 		        throw new RuntimeException("Erro ao desativar equipamento!");
 		    }
 		}
@@ -106,10 +118,22 @@ public class EquipamentosService {
 	public String reativarEquipamento(String patrimonio) {
 	    Equipamentos equipamento = this.equipamentosRepository.findByPatrimonio(patrimonio);
 	    long id = equipamento.getId();
-	    int equipamentoReativado = this.equipamentosRepository.reativarEquipamentos(id, "Disponível");
+	    
+	    equipamento.setAtivo(true);
+	    equipamento.setSituacao("Disponível");
+	    /*int equipamentoReativado = this.equipamentosRepository.reativarEquipamentos(id, "Disponível");
 	    if (equipamentoReativado > 0) {
 	        return "Equipamento reativado com sucesso!";
 	    } else {
+	        throw new RuntimeException("Erro ao reativar equipamento!");
+	    }*/
+	    
+	    Equipamentos equipDel = this.equipamentosRepository.save(equipamento);
+		
+		if(equipDel != null) {
+			return "Equipamento reativado com sucesso!";
+		}
+		else {
 	        throw new RuntimeException("Erro ao reativar equipamento!");
 	    }
 	}

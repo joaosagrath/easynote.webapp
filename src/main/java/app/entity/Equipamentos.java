@@ -24,7 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Equipamentos {
+public class Equipamentos extends Auditable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +49,7 @@ public class Equipamentos {
 	
 	private boolean ativo;
 	
-	@OneToMany(mappedBy = "equipamento", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "equipamento")
 	@JsonIgnoreProperties("equipamento")
 	private List<Emprestimos> emprestimo;
 	

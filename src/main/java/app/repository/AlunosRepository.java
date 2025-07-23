@@ -1,5 +1,7 @@
 package app.repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,4 +43,46 @@ public interface AlunosRepository extends JpaRepository<Alunos, Long>{
 		       @Param("ra") String ra,
 		       @Param("nome") String nome,
 		       @Param("curso") String curso);
+	
+	/*@Query("SELECT u.id, u.createdBy, u.createdDate, u.lastModifiedBy, u.lastModifiedDate FROM Alunos u")
+	List<Object[]> findAuditoriaAlunos();*/
+	
+	/*@Query("""
+		    SELECT a.id, a.createdBy, a.createdDate, a.lastModifiedBy, a.lastModifiedDate
+		    FROM Alunos a
+		    WHERE (:criadoPor IS NULL OR a.createdBy LIKE CONCAT('%', :criadoPor, '%'))
+		      AND (:modificadoPor IS NULL OR a.lastModifiedBy LIKE CONCAT('%', :modificadoPor, '%'))
+		      AND (:dataInicio IS NULL OR a.createdDate >= :dataInicio OR a.lastModifiedDate >= :dataInicio)
+			  AND (:dataFim IS NULL OR a.createdDate <= :dataFim OR a.lastModifiedDate <= :dataFim)
+		""")
+		List<Object[]> findAuditoriaAlunosComFiltro(
+		    @Param("criadoPor") String criadoPor,
+		    @Param("modificadoPor") String modificadoPor,
+		    @Param("dataInicio") LocalDateTime dataInicio,
+		    @Param("dataFim") LocalDateTime dataFim
+		);*/
+	
+	@Query("""
+		    SELECT em.id, em.createdBy, em.createdDate, em.lastModifiedBy, em.lastModifiedDate
+		    FROM Alunos em
+		    WHERE (:criadoPor IS NULL OR em.createdBy LIKE CONCAT('%', :criadoPor, '%'))
+		      AND (:modificadoPor IS NULL OR em.lastModifiedBy LIKE CONCAT('%', :modificadoPor, '%'))
+		      AND (
+		        (:dataInicio IS NULL AND :dataFim IS NULL)
+		        OR (:dataInicio IS NOT NULL AND :dataFim IS NULL AND (em.createdDate >= :dataInicio OR em.lastModifiedDate >= :dataInicio))
+		        OR (:dataInicio IS NULL AND :dataFim IS NOT NULL AND (em.createdDate <= :dataFim OR em.lastModifiedDate <= :dataFim))
+		        OR (:dataInicio IS NOT NULL AND :dataFim IS NOT NULL AND 
+		            ((em.createdDate BETWEEN :dataInicio AND :dataFim) OR 
+		             (em.lastModifiedDate BETWEEN :dataInicio AND :dataFim)))
+		      )
+		""")
+		List<Object[]> findAuditoriaAlunosComFiltro(
+		    @Param("criadoPor") String criadoPor,
+		    @Param("modificadoPor") String modificadoPor,
+		    @Param("dataInicio") LocalDateTime dataInicio,
+		    @Param("dataFim") LocalDateTime dataFim
+		);
+
+
+
 }

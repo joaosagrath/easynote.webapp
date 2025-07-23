@@ -15,6 +15,7 @@ import app.entity.Alunos;
 import app.entity.Emprestimos;
 import app.entity.Equipamentos;
 import app.repository.EmprestimosRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class EmprestimosService {
@@ -95,11 +96,29 @@ public class EmprestimosService {
 	    return this.emprestimosRepository.findAll(pageable);
 	}
 
-	public String encerrarEmprestimo(long id) {
+	/*public String encerrarEmprestimo(long id) {
 		LocalDateTime data = LocalDateTime.now();
 		String situacao = "Encerrado";
 		this.emprestimosRepository.encerrarEmprestimos(id, data, situacao);
 		return "Empréstimo encerrado com sucesso";
+	}*/
+	
+	@Transactional
+	public String encerrarEmprestimo(long id) {
+	    Emprestimos emprestimo = emprestimosRepository.findById(id)
+	        .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado"));
+
+	    emprestimo.setDataDevolucao(LocalDateTime.now());
+	    emprestimo.setSituacao("Encerrado");
+
+	    Emprestimos empEnc = emprestimosRepository.save(emprestimo); // <- dispara auditoria
+	    
+	    if(empEnc != null) {
+	    	return "Empréstimo encerrado com sucesso";
+	    }else {
+	    	throw new RuntimeException("Erro ao encerrar empréstimo!");
+	    }
+	    
 	}
 	
 	public List<Emprestimos> findByFilter(
